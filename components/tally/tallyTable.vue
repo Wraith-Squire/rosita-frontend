@@ -9,7 +9,7 @@
                     placeholder="Pick a day"
                     size="default"
                     format="MM-DD-YYYY"
-                    value-format="MM-DD-YYYY"
+                    value-format="YYYY-MM-DD"
                     :disabled="pageState.isBusy"
                 />
             </div>
@@ -21,7 +21,7 @@
                     placeholder="Pick a day"
                     size="default"
                     format="MM-DD-YYYY"
-                    value-format="MM-DD-YYYY"
+                    value-format="YYYY-MM-DD"
                     :disabled="pageState.isBusy"
                 />
             </div>

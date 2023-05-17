@@ -2,33 +2,63 @@
     <div id="tally-table">
         <div class="tally-table-filter">
             <div>
-                {{ filters.fromDate }}
                 <label>From Date</label>
-                <input type="date" v-model="filters.fromDate"/>
+                <el-date-picker
+                    v-model="filters.fromDate"
+                    type="date"
+                    placeholder="Pick a day"
+                    size="default"
+                    format="MM-DD-YYYY"
+                    value-format="MM-DD-YYYY"
+                    :disabled="pageState.isBusy"
+                />
             </div>
             <div>
                 <label>To Date</label>
-                <input type="date" v-model="filters.toDate"/>
+                <el-date-picker
+                    v-model="filters.toDate"
+                    type="date"
+                    placeholder="Pick a day"
+                    size="default"
+                    format="MM-DD-YYYY"
+                    value-format="MM-DD-YYYY"
+                    :disabled="pageState.isBusy"
+                />
             </div>
             <div>
-                <button>Filter</button>
+                <el-button @click="getTallies()" :disabled="pageState.isBusy">Filter</el-button>
+            </div>
+            <div>
+                <el-button :disabled="pageState.isBusy">Clear</el-button>
+            </div>
+            <div>
+                <el-button :disabled="pageState.isBusy">Export</el-button>
             </div>
             <div></div>
             <div></div>
             <div>
-                <button>Add Tally</button>
+                <el-button type="primary" :disabled="pageState.isBusy">Add</el-button>
             </div>
         </div>
-        <div class="tally-table-row tally-table-header">
-            <div v-for="name in columnNames" :key="name">{{ name }}</div>
+        <div>
+            <el-table :data="tallies" stripe style="width: 100%">
+                <el-table-column prop="date_tallied" label="Date Tallied" />
+                <el-table-column prop="comment" label="Comment" />
+                <el-table-column prop="total_count" label="Made" />
+                <el-table-column prop="total_sold" label="Sold" />
+                <el-table-column prop="total_sales" label="Sales" />
+                <el-table-column label="Actions">
+                    <template #default="scope">
+                        <div class="table-action-buttons">
+                            <el-button size="small">View</el-button>
+                            <el-button size="small" type="danger">Delete</el-button>
+                        </div>
+                    </template>
+                </el-table-column>
+            </el-table>
         </div>
-        <div class="tally-table-row" v-for="tally in tallies" :key="tally.tally_id">
-            <div>{{ tally.date_tallied }}</div>
-            <div>{{ tally.products }}</div>
-            <div>{{ tally.total_count }}</div>
-            <div>{{ tally.total_sold }}</div>
-            <div>{{ tally.total_sales }}</div>
-            <div></div>
+        <div class="tally-table-paginator">
+            <el-pagination layout="prev, pager, next" :page-count="pagination.pageCount" v-model:current-page="filters.currentPage" @current-change="getTallies()"/>
         </div>
     </div>
 </template>
@@ -40,24 +70,31 @@ import { Tally } from '~/types/tally';
 export default {
     data() {
         return {
-            columnNames: [
-                'Date Tallied', 'Product', 'Made', 'Sold', 'Sales', 'Action'
-            ],
             tallies: [] as Array<Tally>,
             filters: {
-                fromDate: null,
-                toDate: null
+                currentPage: 1,
+                perPage: 4,
+                fromDate: '',
+                toDate: ''
+            },
+            pagination: {
+                pageCount: 1
+            },
+            pageState: {
+                isBusy: false
             }
         }
     },
     methods: {
         async getTallies() {
-            await TallyService.list().then((response) => {
-                console.log(response.data)
-                this.tallies = response.data;
-            }).catch((errors) => {
-                console.error(errors);
-            })
+            const {data: data, error: error} = TallyService.list(this.filters);
+            
+            if (error) console.log(error.value);
+
+            console.log(data.value);
+            this.tallies = data.value ? data.value['result'] : [];
+            this.pagination.pageCount = data.value ? data.value['lastPage'] : 1;
+            console.log(this.tallies);
         }
     },
     created() {
@@ -69,7 +106,7 @@ export default {
 <style scoped>
 .tally-table-filter {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(2, 1fr) repeat(6,.5fr);
     gap: .5em;
     align-items: end;
     width: 100%;
@@ -82,24 +119,20 @@ export default {
     flex-direction: column;
     width: 100%;
 }
-.tally-table-header {
-    font-size: medium;
-    font-weight: bold;
-}
-.tally-table-row {
+
+.tally-table-paginator {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: .5em;
-    align-items: end;
-    text-align: center;
-    width: 100%;
-    margin: .5em;
+    justify-content: end;
+}
+
+.table-action-buttons {
+    display: flex;
+    flex-direction: row;
 }
 
 input[type="date"] {
     all: unset;
-    border-radius: .1em;
     text-align: center;
-    background-color: rgba(158, 158, 204, 0.479);
+    background-color: rgba(158, 158, 204, 0.2);
 }
 </style>

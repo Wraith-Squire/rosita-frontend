@@ -29,7 +29,7 @@
                 <el-button @click="getTallies()" :disabled="pageState.isBusy">Filter</el-button>
             </div>
             <div>
-                <el-button :disabled="pageState.isBusy">Clear</el-button>
+                <el-button @click="clearFilters()" :disabled="pageState.isBusy">Clear</el-button>
             </div>
             <div>
                 <el-button :disabled="pageState.isBusy">Export</el-button>
@@ -42,7 +42,11 @@
         </div>
         <div>
             <el-table :data="tallies" stripe style="width: 100%">
-                <el-table-column prop="date_tallied" label="Date Tallied" />
+                <el-table-column label="Date Tallied" >
+                    <template #default="scope">
+                        {{ new Date(scope.row.date_tallied).toLocaleDateString() }}
+                    </template>
+                </el-table-column>
                 <el-table-column prop="comment" label="Comment" />
                 <el-table-column prop="total_count" label="Made" />
                 <el-table-column prop="total_sold" label="Sold" />
@@ -64,6 +68,7 @@
 </template>
     
 <script lang='ts'>
+import { tr } from 'element-plus/es/locale';
 import {TallyService} from '~/services/tallyService';
 import { Tally } from '~/types/tally';
 
@@ -87,14 +92,22 @@ export default {
     },
     methods: {
         async getTallies() {
-            const {data: data, error: error} = TallyService.list(this.filters);
+            this.pageState.isBusy = true;
+
+            const {data: data, error: error} = await TallyService.list(this.filters);
             
             if (error) console.log(error.value);
 
-            console.log(data.value);
             this.tallies = data.value ? data.value['result'] : [];
             this.pagination.pageCount = data.value ? data.value['lastPage'] : 1;
-            console.log(this.tallies);
+
+            this.pageState.isBusy = false;
+        },
+        clearFilters() {
+            this.filters.fromDate = '';
+            this.filters.toDate = '';
+
+            this.getTallies();
         }
     },
     created() {

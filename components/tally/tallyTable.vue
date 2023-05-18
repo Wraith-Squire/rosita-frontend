@@ -93,14 +93,20 @@ export default {
         async getTallies() {
             this.componentState.isBusy = true;
 
-            await TallyService.list(this.filters).then((response) => {
-                const data = response as unknown as Record<string, any>;
+            let timer;
 
-                this.tallies = data.result;
-                this.pagination.pageCount = data.lastPage;
-            }).catch((error) => {
-                this.error = error;
-            });
+            if (timer) clearTimeout(timer);
+
+            timer = setTimeout(async () => {
+                await TallyService.list(this.filters).then((response) => {
+                    const data = response as unknown as Record<string, any>;
+
+                    this.tallies = data.result;
+                    this.pagination.pageCount = data.lastPage;
+                }).catch((error) => {
+                    this.error = error;
+                });
+            }, 500)
 
             this.componentState.isBusy = false;
         },

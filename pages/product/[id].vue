@@ -36,7 +36,7 @@
         <div class="product-buttons">
             <el-button type="success" @click="parameters.id == 0 ? addProduct(): updateProduct()" :disabled="componentState.isBusy">Save</el-button>
             <el-button type="default" :disabled="componentState.isBusy" @click="goToList()">Cancel</el-button>
-            <el-button type="danger" :disabled="componentState.isBusy" @click="deleteProduct()">Delete</el-button>
+            <el-button type="danger" :disabled="componentState.isBusy" @click="deleteProduct()" v-if="parameters.id != 0">Delete</el-button>
         </div>
     </div>
 </template>
@@ -69,8 +69,13 @@ export default {
                 const data = response as unknown as Record<string, any>
 
                 this.product = data;
+
+                if (this.parameters.id != 0 && Object.entries(this.product).length == 0) {
+                    this.$router.push('/product/list');
+                }
             }).catch((err) => {
                 this.errors = err.response._data.errors;
+                this.$router.push('/product/list');
             });
 
             this.componentState.isBusy = false;

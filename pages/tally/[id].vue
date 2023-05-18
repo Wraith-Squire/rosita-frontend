@@ -47,11 +47,15 @@ export default {
 
             await TallyService.details(id).then((response) => {
                 const data = response as unknown as Record<string, any>;
-                console.log(data);
 
                 this.tally = data;
+
+                if (Object.entries(this.tally).length == 0) {
+                    this.$router.push('/tally/list');
+                }
             }).catch((error) => {
                 this.error = error
+                this.$router.push('/tally/list');
             });
         }
     },

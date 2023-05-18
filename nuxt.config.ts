@@ -6,7 +6,8 @@ export default defineNuxtConfig({
     elementPlus: { icon: 'ElIcon' },
     runtimeConfig: {
         public: {
-            baseUrl: process.env.NUXT_PUBLIC_API_BASE_URL
+            baseUrl: process.env.NUXT_PUBLIC_API_BASE_URL,
+            textColor: 'rgb(100, 56, 67)'
         }
     },
     ssr: true,

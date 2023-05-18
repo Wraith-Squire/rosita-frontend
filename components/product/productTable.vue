@@ -60,21 +60,27 @@ export default {
             componentState: {
                 isBusy: false
             },
-            error: {}
+            error: {},
         }
     },
     methods: {
         async getProducts() {
             this.componentState.isBusy = true;
 
-            await ProductService.list(this.filters).then((response) => {
-                const data = response as unknown as Record<string, any>;
+            let timer;
 
-                this.products = data.result;
-                this.pagination.pageCount = data.lastPage; 
-            }).catch((error) => {
-                this.error = error;
-            });
+            if (timer) clearTimeout(timer);
+
+            timer = setTimeout(async () => {
+                await ProductService.list(this.filters).then((response) => {
+                    const data = response as unknown as Record<string, any>;
+
+                    this.products = data.result;
+                    this.pagination.pageCount = data.lastPage; 
+                }).catch((error) => {
+                    this.error = error;
+                });
+            }, 500);
 
             this.componentState.isBusy = false;
         },

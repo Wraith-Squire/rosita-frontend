@@ -10,7 +10,7 @@
             default-active="1"
             class="el-menu-rosita"
             :collapse="false"
-            active-text-color="#A7727D"
+            active-text-color="brown"
             >
             <el-menu-item index="1" @click="goToProduct()">
                 <el-icon><ElIconBurger></ElIconBurger></el-icon>

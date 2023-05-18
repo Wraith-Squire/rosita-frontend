@@ -14,7 +14,6 @@
 <style>
 :root {
     --background-left: rgb(77, 69, 93);
-    --color-main: #A7727D;
 }
 
 body {
@@ -25,7 +24,6 @@ body {
     display: grid;
     grid-template-columns: 1fr 3fr 1fr;
     height: 100lvh;
-    color: var(--color-main);
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
 

@@ -9,6 +9,7 @@
                     type="text"
                     placeholder="Please input"
                 />
+                <span v-if="errors.hasOwnProperty('product_name')" class="error">{{errors.product_name[0]}}</span>
             </div>
             <div>
                 <label>Price</label>
@@ -17,6 +18,7 @@
                     type="number"
                     placeholder="Please input"
                 />
+                <span v-if="errors.hasOwnProperty('product_price')" class="error">{{errors.product_price[0]}}</span>
             </div>
             <div>
                 <label>Cost</label>
@@ -25,7 +27,13 @@
                     type="number"
                     placeholder="Please input"
                 />
+                <span v-if="errors.hasOwnProperty('product_cost')" class="error">{{errors.product_cost[0]}}</span>
             </div>
+        </div>
+        <div class="product-buttons">
+            <el-button type="success" @click="addProduct()">Save</el-button>
+            <el-button type="default">Cancel</el-button>
+            <el-button type="danger">Delete</el-button>
         </div>
     </div>
 </template>
@@ -38,7 +46,7 @@ export default {
     data() {
         return {
             product: {} as Product,
-            error: {},
+            errors: {} as Record<string, any>,
             componentState: {
                 isBusy: false
             }
@@ -56,11 +64,21 @@ export default {
                 const data = response as unknown as Record<string, any>
 
                 this.product = data;
-            }).catch((error) => {
-                this.error = error;
+            }).catch((err) => {
+                this.errors = err.response._data.errors;
             });
 
             this.componentState.isBusy = false;
+        },
+        async addProduct() {
+            this.componentState.isBusy = true;
+
+            await ProductService.create(this.product).then((response) => {
+                this.errors = {};
+                console.log({response: response});
+            }).catch((err) => {
+                this.errors = err.response._data.errors;
+            })
         }
     },
     created() {
@@ -83,4 +101,15 @@ export default {
     flex-direction: column;
     margin: .2em;
 } 
+
+.product-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 1em;
+}
+
+.error {
+    color: var(--el-color-danger);
+}
 </style>

@@ -16,11 +16,8 @@ export class ProductService {
     }
 
     static create(payload: Record<string, any>) {
-        const config = useRuntimeConfig();
-
-        return $fetch('api/product/details/', {
+        return $http('api/product/create/', {
             method: "POST",
-            baseURL: config.public.baseURL,
             body: payload,
         });
     }

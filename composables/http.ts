@@ -1,7 +1,3 @@
-// export const $http = $fetch.create({
-//     baseURL: process.env.NUXT_PUBLIC_API_BASE_URL
-// })
-
 export function $http(url: string, options: Record<string, any>) {
     const config = useRuntimeConfig();
 

@@ -95,8 +95,10 @@ export default {
             this.componentState.isBusy = true;
 
             await TallyService.list(this.filters).then((response) => {
-                this.tallies = response.data.value ? response.data.value['result']: []; 
-                this.pagination.pageCount = response.data.value ? response.data.value['lastPage']: 1;
+                const data = response as unknown as Record<string, any>;
+
+                this.tallies = data.result;
+                this.pagination.pageCount = data.lastPage;
             }).catch((error) => {
                 this.error = error;
             });

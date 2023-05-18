@@ -36,7 +36,7 @@
             </el-table>
         </div>
         <div class="product-table-paginator">
-            <el-pagination layout="prev, pager, next" :page-count="pagination.pageCount" v-model:current-page="filters.currentPage"  />
+            <el-pagination layout="prev, pager, next" :page-count="pagination.pageCount" v-model:current-page="filters.currentPage" @current-change="getProducts()"  />
         </div>
     </div>
 </template>
@@ -68,8 +68,10 @@ export default {
             this.componentState.isBusy = true;
 
             await ProductService.list().then((response) => {
-                this.products = response.data.value ? response.data.value['result']: [];
-                this.pagination.pageCount =  response.data.value ? response.data.value['lastPage']: 1;
+                const data = response as unknown as Record<string, any>;
+
+                this.products = data.result;
+                this.pagination.pageCount = data.lastPage; 
             }).catch((error) => {
                 this.error = error;
             });

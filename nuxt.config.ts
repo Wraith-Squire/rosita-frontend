@@ -6,7 +6,7 @@ export default defineNuxtConfig({
     elementPlus: { /** Options */ },
     runtimeConfig: {
         public: {
-            baseUrl: process.env.BASE_URL||"http://localhost:3100/"
+            baseUrl: process.env.NUXT_PUBLIC_API_BASE_URL
         }
     },
     ssr: true,

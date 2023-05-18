@@ -53,9 +53,9 @@ export default {
             this.componentState.isBusy = true;
 
             await ProductService.details(id).then((response) => {
-                this.product = response.data.value ? response.data.value['details']: {};
+                const data = response as unknown as Record<string, any>
 
-                return response;
+                this.product = data;
             }).catch((error) => {
                 this.error = error;
             });

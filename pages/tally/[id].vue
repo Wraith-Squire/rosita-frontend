@@ -37,16 +37,22 @@ export default {
             tally: {} as Tally,
             pageState: {
                 isBusy: false
-            }
+            },
+            error: {}
         }
     },
     methods: {
         async getTally() {
             const id: number = this.$route.params.id as unknown as number;
 
-            const { data: data, error: error } = await TallyService.details(id);
+            await TallyService.details(id).then((response) => {
+                const data = response as unknown as Record<string, any>;
+                console.log(data);
 
-            this.tally = data.value as Tally;
+                this.tally = data;
+            }).catch((error) => {
+                this.error = error
+            });
         }
     },
     created() {

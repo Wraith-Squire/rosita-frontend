@@ -4,7 +4,7 @@ export class ProductService {
     static list(payload?: Record<string, any>) {
         return $http('api/product/list/', {
             method: "GET",
-            body: payload,
+            params: payload,
         });
     }
 
@@ -18,6 +18,16 @@ export class ProductService {
     static create(payload: Record<string, any>) {
         return $http('api/product/create/', {
             method: "POST",
+            body: payload,
+        });
+    }
+
+    static update(id: number, payload: Record<string, any>) {
+        payload.id = id;
+        console.log(payload);
+
+        return $http('api/product/update/', {
+            method: "PUT",
             body: payload,
         });
     }

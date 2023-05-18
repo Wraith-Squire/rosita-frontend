@@ -17,7 +17,7 @@
             <div></div>
             <div></div>
             <div>
-                <el-button type="primary" :disabled="componentState.isBusy">Add</el-button>
+                <el-button type="primary" :disabled="componentState.isBusy" @click="goToForm()">Add</el-button>
             </div>
         </div>
         <div>
@@ -28,7 +28,7 @@
                 <el-table-column label="Actions">
                     <template #default="scope">
                         <div class="product-action-buttons">
-                            <el-button size="small">View</el-button>
+                            <el-button size="small" @click="goToForm(scope.row.product_id)">View</el-button>
                             <el-button size="small" type="danger">Delete</el-button>
                         </div>
                     </template>
@@ -67,7 +67,7 @@ export default {
         async getProducts() {
             this.componentState.isBusy = true;
 
-            await ProductService.list().then((response) => {
+            await ProductService.list(this.filters).then((response) => {
                 const data = response as unknown as Record<string, any>;
 
                 this.products = data.result;
@@ -77,6 +77,9 @@ export default {
             });
 
             this.componentState.isBusy = false;
+        },
+        goToForm(id = 0) {
+            this.$router.push(`/product/${id}`)
         }
     },
     created() {

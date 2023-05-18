@@ -1,6 +1,6 @@
 <template>
     <div id="product-list-container">
-        <h1>Product List</h1>
+        <h3>Product List</h3>
         <div>
             <ProductTable></ProductTable>
         </div>

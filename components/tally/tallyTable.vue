@@ -54,8 +54,7 @@
                 <el-table-column label="Actions">
                     <template #default="scope">
                         <div class="table-action-buttons">
-                            <el-button size="small">View</el-button>
-                            <el-button size="small" type="danger">Delete</el-button>
+                            <el-button size="small" type="success">View</el-button>
                         </div>
                     </template>
                 </el-table-column>

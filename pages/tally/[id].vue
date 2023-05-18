@@ -1,6 +1,6 @@
 <template>
     <div id="tally-form-container">
-        <h1>Tally</h1>
+        <h3>Tally</h3>
         <div class="tally-form">
             <div>
                 <label>Date Tallied</label>

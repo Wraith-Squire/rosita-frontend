@@ -1,6 +1,6 @@
 <template>
     <div id="product-form-container">
-        <h1>Product</h1>
+        <h3>Product</h3>
         <div class="product-form">
             <div>
                 <label>Name</label>
@@ -10,7 +10,7 @@
                     placeholder="Please input"
                     :disabled="componentState.isBusy"
                 />
-                <span v-if="errors.hasOwnProperty('product_name')" class="error">{{errors.product_name[0]}}</span>
+                <span v-if="errors.product_name" class="error">{{errors.product_name[0]}}</span>
             </div>
             <div>
                 <label>Price</label>
@@ -20,7 +20,7 @@
                     placeholder="Please input"
                     :disabled="componentState.isBusy"
                 />
-                <span v-if="errors.hasOwnProperty('product_price')" class="error">{{errors.product_price[0]}}</span>
+                <span v-if="errors.product_price" class="error">{{ errors.product_price[0] }}</span>
             </div>
             <div>
                 <label>Cost</label>
@@ -30,26 +30,27 @@
                     placeholder="Please input"
                     :disabled="componentState.isBusy"
                 />
-                <span v-if="errors.hasOwnProperty('product_cost')" class="error">{{errors.product_cost[0]}}</span>
+                <span v-if="errors.product_cost" class="error">{{ errors.product_cost[0] }}</span>
             </div>
         </div>
         <div class="product-buttons">
             <el-button type="success" @click="parameters.id == 0 ? addProduct(): updateProduct()" :disabled="componentState.isBusy">Save</el-button>
             <el-button type="default" :disabled="componentState.isBusy" @click="goToList()">Cancel</el-button>
-            <el-button type="danger" :disabled="componentState.isBusy">Delete</el-button>
+            <el-button type="danger" :disabled="componentState.isBusy" @click="deleteProduct()">Delete</el-button>
         </div>
     </div>
 </template>
     
 <script lang='ts'>
+import { ElDialog } from 'element-plus';
 import { ProductService } from '~/services/productService';
-import { Product } from '~/types/product';
+import { Product, ProductErrors } from '~/types/product';
 
 export default {
     data() {
         return {
             product: {} as Product,
-            errors: {} as Record<string, any>,
+            errors: {} as ProductErrors,
             componentState: {
                 isBusy: false
             },
@@ -79,7 +80,7 @@ export default {
 
             ElMessageBox.confirm('Save Product?').then(async () => {
                 await ProductService.create(this.product).then((response) => {
-                    this.errors = {};
+                    this.errors = {} as ProductErrors;
                     this.$router.push('/product/list');
                     console.log({response: response});
                 }).catch((err) => {
@@ -89,7 +90,7 @@ export default {
 
             this.componentState.isBusy = false;
         },
-        async updateProduct() {
+        updateProduct() {
             this.componentState.isBusy = true;
 
             ElMessageBox.confirm("Save Product?").then(async () => {
@@ -106,6 +107,17 @@ export default {
 
             this.componentState.isBusy = false;
 
+        },
+        deleteProduct() {
+            this.componentState.isBusy = true;
+
+            ElMessageBox.confirm("Are you sure you want to delete this product?").then(async () => {
+                await ProductService.delete(this.parameters.id).then((response) => {
+                    this.$router.push('/product/list');
+                }).catch((error) => {
+                    console.log(error);
+                });
+            })
         },
         goToList() {
             this.$router.push('/product/list')

@@ -3,7 +3,7 @@ export default defineNuxtConfig({
     modules: [
         '@element-plus/nuxt'
     ],
-    elementPlus: { /** Options */ },
+    elementPlus: { icon: 'ElIcon' },
     runtimeConfig: {
         public: {
             baseUrl: process.env.NUXT_PUBLIC_API_BASE_URL

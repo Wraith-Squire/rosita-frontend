@@ -9,3 +9,9 @@ export interface BaseProduct {
 export interface Product extends BaseProduct {
     product_id?: number
 }
+
+export interface ProductErrors {
+    product_name?: Array<string>,
+    product_price?: Array<string>,
+    product_cost?: Array<string>
+}

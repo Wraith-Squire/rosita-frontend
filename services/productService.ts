@@ -31,4 +31,11 @@ export class ProductService {
             body: payload,
         });
     }
+
+    static delete(id: number) {
+        return $http('api/product/delete/', {
+            method: "DELETE",
+            body: {id: id},
+        });
+    }
 }

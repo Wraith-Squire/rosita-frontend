@@ -8,6 +8,7 @@
                     :rows="6"
                     type="text"
                     placeholder="Please input"
+                    @input="getProducts()"
                 />
             </div>
             <div></div>
@@ -28,8 +29,7 @@
                 <el-table-column label="Actions">
                     <template #default="scope">
                         <div class="product-action-buttons">
-                            <el-button size="small" @click="goToForm(scope.row.product_id)">View</el-button>
-                            <el-button size="small" type="danger">Delete</el-button>
+                            <el-button size="small" type="success"  @click="goToForm(scope.row.product_id)">View</el-button>
                         </div>
                     </template>
                 </el-table-column>

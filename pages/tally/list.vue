@@ -1,6 +1,6 @@
 <template>
     <div id="tally-list-container">
-        <h1>Tally List</h1>
+        <h3>Tally List</h3>
         <div>
             <TallyTable></TallyTable>
         </div>

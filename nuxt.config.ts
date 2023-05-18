@@ -9,6 +9,6 @@ export default defineNuxtConfig({
             baseUrl: process.env.BASE_URL||"http://localhost:3100/"
         }
     },
-    components: true,
-
+    ssr: true,
+    components: true
 })

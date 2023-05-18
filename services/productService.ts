@@ -1,19 +1,19 @@
 import { useAPIFetch } from "~/composables/useAPIFetch";
 
-export class TallyService {
+export class ProductService {
     static list(payload?: Record<string, any>) {
-        return useAPIFetch('api/tally/list/', {
+        return useAPIFetch('api/product/list/', {
             method: "GET",
-            key: "tally:list",
+            key: "product:list",
             params: payload,
             immediate: true
         });
     }
 
     static details(id: number) {
-        return useAPIFetch('api/tally/details/', {
+        return useAPIFetch('api/product/details/', {
             method: "GET",
-            key: "tally:details",
+            key: "product:details",
             params: {id: id},
             immediate: true
         })

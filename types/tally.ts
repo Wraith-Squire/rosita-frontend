@@ -11,6 +11,8 @@ export interface BaseTally {
     total_cost?: number,
     total_sales?: number,
     total_income?: number,
+    created_at?: Date,
+    updated_at?: Date
 }
 
 export interface Tally extends BaseTally {

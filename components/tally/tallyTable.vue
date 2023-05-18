@@ -10,7 +10,7 @@
                     size="default"
                     format="MM-DD-YYYY"
                     value-format="YYYY-MM-DD"
-                    :disabled="pageState.isBusy"
+                    :disabled="componentState.isBusy"
                 />
             </div>
             <div>
@@ -22,22 +22,22 @@
                     size="default"
                     format="MM-DD-YYYY"
                     value-format="YYYY-MM-DD"
-                    :disabled="pageState.isBusy"
+                    :disabled="componentState.isBusy"
                 />
             </div>
             <div>
-                <el-button @click="getTallies()" :disabled="pageState.isBusy">Filter</el-button>
+                <el-button @click="getTallies()" :disabled="componentState.isBusy">Filter</el-button>
             </div>
             <div>
-                <el-button @click="clearFilters()" :disabled="pageState.isBusy">Clear</el-button>
+                <el-button @click="clearFilters()" :disabled="componentState.isBusy">Clear</el-button>
             </div>
             <div>
-                <el-button :disabled="pageState.isBusy">Export</el-button>
+                <el-button :disabled="componentState.isBusy">Export</el-button>
             </div>
             <div></div>
             <div></div>
             <div>
-                <el-button type="primary" :disabled="pageState.isBusy">Add</el-button>
+                <el-button type="primary" :disabled="componentState.isBusy">Add</el-button>
             </div>
         </div>
         <div>
@@ -68,7 +68,6 @@
 </template>
     
 <script lang='ts'>
-import { tr } from 'element-plus/es/locale';
 import {TallyService} from '~/services/tallyService';
 import { Tally } from '~/types/tally';
 
@@ -78,30 +77,31 @@ export default {
             tallies: [] as Array<Tally>,
             filters: {
                 currentPage: 1,
-                perPage: 4,
+                perPage: 10,
                 fromDate: '',
                 toDate: ''
             },
             pagination: {
                 pageCount: 1
             },
-            pageState: {
+            componentState: {
                 isBusy: false
-            }
+            },
+            error: {}
         }
     },
     methods: {
         async getTallies() {
-            this.pageState.isBusy = true;
+            this.componentState.isBusy = true;
 
-            const {data: data, error: error} = await TallyService.list(this.filters);
-            
-            if (error) console.log(error.value);
+            await TallyService.list(this.filters).then((response) => {
+                this.tallies = response.data.value ? response.data.value['result']: []; 
+                this.pagination.pageCount = response.data.value ? response.data.value['lastPage']: 1;
+            }).catch((error) => {
+                this.error = error;
+            });
 
-            this.tallies = data.value ? data.value['result'] : [];
-            this.pagination.pageCount = data.value ? data.value['lastPage'] : 1;
-
-            this.pageState.isBusy = false;
+            this.componentState.isBusy = false;
         },
         clearFilters() {
             this.filters.fromDate = '';
@@ -141,11 +141,5 @@ export default {
 .table-action-buttons {
     display: flex;
     flex-direction: row;
-}
-
-input[type="date"] {
-    all: unset;
-    text-align: center;
-    background-color: rgba(158, 158, 204, 0.2);
 }
 </style>

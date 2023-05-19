@@ -83,7 +83,7 @@ export default {
                 }).catch((error) => {
                     this.error = error;
                 });
-            }, 500);
+            }, 200);
 
             this.componentState.isBusy = false;
         },

@@ -80,8 +80,6 @@ export default {
                 this.error = error
                 this.$router.push('/tally/list');
             });
-
-            this.componentState.isBusy = false;
         },
         addTally() {
             this.componentState.isBusy = true;
@@ -118,7 +116,17 @@ export default {
             this.componentState.isBusy = false;
         },
         deleteTally() {
+            this.componentState.isBusy = true;
 
+            ElMessageBox.confirm("Are you sure you want to delete this tally?").then(async () => {
+                await TallyService.delete(this.parameters.id).then((response) => {
+                    this.$router.push('/tally/list');
+                }).catch((error) => {
+                    console.log(error);
+                });
+            })
+
+            this.componentState.isBusy = false;
         },
         goToList() {
             this.$router.push('/tally/list');
@@ -130,6 +138,7 @@ export default {
     created() {
         this.parameters.id = this.$route.params.id as unknown as number;
         this.getTally().then(() => {
+            this.componentState.isBusy = false;
             this.componentState.initialized = true;
         });
     },

@@ -41,7 +41,7 @@
             </div>
         </div>
         <div>
-            <el-table :data="tallies" stripe style="width: 100%">
+            <el-table :data="tallies" stripe style="width: 100%" v-loading="componentState.isBusy">
                 <el-table-column label="Date Tallied" >
                     <template #default="scope">
                         {{ new Date(scope.row.date_tallied).toLocaleDateString() }}
@@ -104,12 +104,14 @@ export default {
 
                     this.tallies = data.result;
                     this.pagination.pageCount = data.lastPage;
+
+                    this.componentState.isBusy = false;
                 }).catch((error) => {
                     this.error = error;
+
+                    this.componentState.isBusy = false;
                 });
             }, 200)
-
-            this.componentState.isBusy = false;
         },
         clearFilters() {
             this.filters.fromDate = '';

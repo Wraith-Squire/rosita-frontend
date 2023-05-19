@@ -22,7 +22,7 @@
             </div>
         </div>
         <div>
-            <el-table :data="products" stripe style="width: 100%">
+            <el-table :data="products" stripe style="width: 100%" v-loading="componentState.isBusy">
                 <el-table-column prop="product_name" label="Name" />
                 <el-table-column prop="product_price" label="Price" />
                 <el-table-column prop="product_cost" label="Cost" />
@@ -71,7 +71,6 @@ export default {
         async getProducts() {
             this.componentState.isBusy = true;
 
-
             if (this.debounce.timer) clearTimeout(this.debounce.timer);
 
             this.debounce.timer = setTimeout(async () => {
@@ -80,12 +79,16 @@ export default {
 
                     this.products = data.result;
                     this.pagination.pageCount = data.lastPage; 
+
+                    this.componentState.isBusy = false;
                 }).catch((error) => {
                     this.error = error;
+
+                    this.componentState.isBusy = false;
                 });
             }, 200);
 
-            this.componentState.isBusy = false;
+            
         },
         goToForm(id = 0) {
             this.$router.push(`/product/${id}`)

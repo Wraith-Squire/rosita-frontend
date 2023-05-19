@@ -3,7 +3,7 @@
         <div>
             <TallyProductForm :products-dropdown="dropdown.products" v-if="dropdown.isLoaded" @tally-product-add="getAddedTallyProduct"></TallyProductForm>
         </div>
-        <el-table :data="tallyProducts" style="width: 100%" type="index" :lazy="true" :summary-method="getSummaries" show-summary>
+        <el-table :data="tallyProducts" style="width: 100%" type="index" :lazy="true" :summary-method="getSummaries" show-summary v-loading="componentState.isBusy">
             <el-table-column prop="product_name" label="Product Name" />
             <el-table-column prop="product_count" label="Made" />
             <el-table-column prop="product_sold" label="Sold" />
@@ -40,18 +40,24 @@ export default {
                 products: [] as Array<Product>,
                 isLoaded: false
             },
-            tallyProducts: [] as Array<TallyProduct>
+            tallyProducts: [] as Array<TallyProduct>,
+            componentState: {
+                isBusy: false
+            }
         }
     },
     methods: {
         async getProductsDropdown() {
+            this.componentState.isBusy = true;
+
             await ProductService.list().then((response) => {
                     const data = response as unknown as Record<string, any>;
 
                     this.dropdown.products = data.result;
                     this.dropdown.isLoaded = true;
-                }).catch((error) => {
-                });
+                    this.componentState.isBusy = false;
+                }
+            );
         },
         getAddedTallyProduct(tallyProduct: TallyProduct) {
             this.tallyProducts.push(tallyProduct);

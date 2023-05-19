@@ -51,7 +51,7 @@
                     v-model="tallyProduct.product_price"
                     type="number"
                     placeholder="Please input"
-                    :disabled="true"
+                    :disabled="!override.price"
                 />
             </div>
             <div>
@@ -62,6 +62,14 @@
                     placeholder="Please input"
                     :disabled="true"
                 />
+            </div>
+            <div>
+                <div>
+                    <label>Override Price</label>
+                    <div>
+                        <el-switch v-model="override.price" active-text="Yes" inactive-text="No"/>
+                    </div>
+                </div>
             </div>
         </div>
         <template #footer>
@@ -105,7 +113,10 @@ export default {
             componentState: {
                 isBusy: false
             },
-            errors: {} as TallyProductErrors
+            errors: {} as TallyProductErrors,
+            override: {
+                price: false
+            }
         }
     },
     methods: {
@@ -146,7 +157,11 @@ export default {
                 this.componentState.isBusy = true;
 
                 if (newValue?.product_id) {
-                    this.tallyProduct.product_price = this.productsDropdown.filter((product) => product.product_id == this.tallyProduct.product_id)[0]?.product_price ?? 0;
+
+                    if (this.override.price == false) {
+                        this.tallyProduct.product_price = this.productsDropdown.filter((product) => product.product_id == this.tallyProduct.product_id)[0]?.product_price ?? 0;
+                    }
+                    
                     this.tallyProduct.product_name = this.productsDropdown.filter((product) => product.product_id == this.tallyProduct.product_id)[0]?.product_name ?? '';
                 }
 
@@ -189,7 +204,7 @@ export default {
         grid-template-columns: repeat(3, 1fr);
     }
 
-    .tally-product-form div {
+    .tally-product-form > div {
         display: flex;
         flex-direction: column;
     }

@@ -37,7 +37,7 @@
             <div></div>
             <div></div>
             <div>
-                <el-button type="primary" :disabled="componentState.isBusy" @click="goToForm()">Add</el-button>
+                <el-button type="primary" :disabled="componentState.isBusy" @click="goToForm()" style="width: 6em">Add</el-button>
             </div>
         </div>
         <div>
@@ -128,20 +128,22 @@ export default {
 </script>
     
 <style scoped>
+#tally-table {
+    width: 100%;
+}
 .tally-table-filter {
     display: grid;
     grid-template-columns: repeat(2, 1fr) repeat(6,.5fr);
-    gap: .5em;
     align-items: end;
-    width: 100%;
-    justify-content: center;
+    gap: .5em;
+    justify-content: space-between;
     margin-bottom: 2em;
 }
 
 .tally-table-filter div {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    justify-content: center;
 }
 
 .tally-table-paginator {

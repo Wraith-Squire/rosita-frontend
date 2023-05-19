@@ -4,6 +4,12 @@
             <NavigationMenu />
         </section>
         <section id="default-layout-center">
+            <!-- <div class="nav-menu-header">
+                <div>
+                    <img src="/logo.jpg" height="100" width="100"/>
+                </div>
+                <div id="nav-title">Products Tally Management</div>
+            </div> -->
             <NuxtPage />
         </section>
         <section id="default-layout-right">
@@ -25,10 +31,6 @@ body {
     grid-template-columns: 1fr 3fr 1fr;
     height: 100lvh;
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-}
-
-#default-layout-center {
-    padding-top: 8em;
 }
 
 .error {

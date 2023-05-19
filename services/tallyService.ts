@@ -14,4 +14,11 @@ export class TallyService {
             params: {id: id},
         })
     }
+
+    static validateTallyProduct(payload?: Record<string, any>) {
+        return $http('api/tallyProduct/validate/', {
+            method: "POST",
+            body: payload,
+        });
+    }
 }

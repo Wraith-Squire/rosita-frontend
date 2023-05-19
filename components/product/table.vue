@@ -42,6 +42,7 @@
 </template>
     
 <script lang='ts'>
+import { thumbProps } from 'element-plus';
 import { ProductService } from '~/services/productService';
 import { Product } from '~/types/product';
 
@@ -61,17 +62,19 @@ export default {
                 isBusy: false
             },
             error: {},
+            debounce: {
+                timer: null as any
+            }
         }
     },
     methods: {
         async getProducts() {
             this.componentState.isBusy = true;
 
-            let timer;
 
-            if (timer) clearTimeout(timer);
+            if (this.debounce.timer) clearTimeout(this.debounce.timer);
 
-            timer = setTimeout(async () => {
+            this.debounce.timer = setTimeout(async () => {
                 await ProductService.list(this.filters).then((response) => {
                     const data = response as unknown as Record<string, any>;
 

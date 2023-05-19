@@ -18,3 +18,21 @@ export interface BaseTally {
 export interface Tally extends BaseTally {
     tally_id?: number
 }
+
+export interface TallyProduct {
+    product_id?: number,
+    product_name?: string,
+    product_count?: number,
+    product_unsold?: number,
+    product_sold?: number,
+    product_price?: number,
+    product_cost?: number,
+    product_sales?: number,
+    product_income?: number,
+}
+
+export interface TallyProductErrors {
+    product_name?: Array<string>,
+    product_count?: Array<string>,
+    product_unsold?: Array<string>
+}

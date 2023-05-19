@@ -37,7 +37,7 @@
             <div></div>
             <div></div>
             <div>
-                <el-button type="primary" :disabled="componentState.isBusy">Add</el-button>
+                <el-button type="primary" :disabled="componentState.isBusy" @click="goToForm()">Add</el-button>
             </div>
         </div>
         <div>
@@ -54,7 +54,7 @@
                 <el-table-column label="Actions">
                     <template #default="scope">
                         <div class="table-action-buttons">
-                            <el-button size="small" type="success">View</el-button>
+                            <el-button size="small" type="success" @click="goToForm(scope.row.tally_id)">View</el-button>
                         </div>
                     </template>
                 </el-table-column>
@@ -86,18 +86,19 @@ export default {
             componentState: {
                 isBusy: false
             },
-            error: {}
+            error: {},
+            debounce: {
+                timer: null as any
+            }
         }
     },
     methods: {
         async getTallies() {
             this.componentState.isBusy = true;
 
-            let timer;
+            if (this.debounce.timer) clearTimeout(this.debounce.timer);
 
-            if (timer) clearTimeout(timer);
-
-            timer = setTimeout(async () => {
+            this.debounce.timer = setTimeout(async () => {
                 await TallyService.list(this.filters).then((response) => {
                     const data = response as unknown as Record<string, any>;
 
@@ -115,6 +116,9 @@ export default {
             this.filters.toDate = '';
 
             this.getTallies();
+        },
+        goToForm(id = 0) {
+            this.$router.push(`/tally/${id}`)
         }
     },
     created() {

@@ -23,6 +23,10 @@
                     placeholder="Please input"
                 />
             </div>
+            <div class="tally-form-products">
+                <label>Products</label>
+                <TallyProductTable></TallyProductTable>
+            </div>
         </div>
     </div>
 </template>
@@ -38,19 +42,22 @@ export default {
             pageState: {
                 isBusy: false
             },
-            error: {}
+            error: {},
+            parameters: {
+                id: 0
+            }
         }
     },
     methods: {
         async getTally() {
-            const id: number = this.$route.params.id as unknown as number;
+            if (this.parameters.id == 0) return;
 
-            await TallyService.details(id).then((response) => {
+            await TallyService.details(this.parameters.id).then((response) => {
                 const data = response as unknown as Record<string, any>;
 
                 this.tally = data;
 
-                if (Object.entries(this.tally).length == 0) {
+                if (this.parameters.id != 0 && Object.entries(this.tally).length == 0) {
                     this.$router.push('/tally/list');
                 }
             }).catch((error) => {
@@ -60,6 +67,7 @@ export default {
         }
     },
     created() {
+        this.parameters.id = this.$route.params.id as unknown as number;
         this.getTally();
     },
 }
@@ -78,5 +86,9 @@ export default {
     display: flex;
     flex-direction: column;
     margin: .2em;
+}
+
+el-date-picker {
+    width: 100vw;
 }
 </style>

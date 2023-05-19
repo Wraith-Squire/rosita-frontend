@@ -30,4 +30,8 @@ body {
 #default-layout-center {
     padding-top: 8em;
 }
+
+.error {
+    color: var(--el-color-danger);
+}
 </style>

@@ -49,7 +49,10 @@ import { Product, ProductErrors } from '~/types/product';
 export default {
     data() {
         return {
-            product: {} as Product,
+            product: {
+                product_price: 0,
+                product_cost: 0
+            } as Product,
             errors: {} as ProductErrors,
             componentState: {
                 isBusy: false
@@ -71,11 +74,12 @@ export default {
                 this.product = data;
 
                 if (this.parameters.id != 0 && Object.entries(this.product).length == 0) {
-                    this.$router.push('/product/list');
+                    this.goToList();
                 }
             }).catch((err) => {
                 this.errors = err.response._data.errors;
-                this.$router.push('/product/list');
+
+                this.goToList();
             });
 
             this.componentState.isBusy = false;
@@ -86,8 +90,8 @@ export default {
             ElMessageBox.confirm('Save Product?').then(async () => {
                 await ProductService.create(this.product).then((response) => {
                     this.errors = {} as ProductErrors;
-                    this.$router.push('/product/list');
-                    console.log({response: response});
+
+                    this.goToList();
                 }).catch((err) => {
                     this.errors = err.response._data.errors;
                 })
@@ -156,9 +160,5 @@ export default {
     flex-direction: row;
     justify-content: flex-end;
     margin-top: 1em;
-}
-
-.error {
-    color: var(--el-color-danger);
 }
 </style>

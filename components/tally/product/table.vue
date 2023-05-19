@@ -3,7 +3,7 @@
         <div>
             <TallyProductForm :products-dropdown="dropdown.products" v-if="dropdown.isLoaded" @tally-product-add="getAddedTallyProduct"></TallyProductForm>
         </div>
-        <el-table :data="tallyProducts" style="width: 100%" type="index" :lazy="true">
+        <el-table :data="tallyProducts" style="width: 100%" type="index" :lazy="true" :summary-method="getSummaries" show-summary>
             <el-table-column prop="product_name" label="Product Name" />
             <el-table-column prop="product_count" label="Made" />
             <el-table-column prop="product_sold" label="Sold" />
@@ -66,12 +66,26 @@ export default {
                 this.tallyProducts.splice(index, 1);
                 this.$emit('TallyProductsUpdated', this.tallyProducts);
             });
+        },
+        getSummaries() {
+            return ['TOTAL', this.totalCount.toString(), this.totalSold.toString(), this.totalSales.toString(), ''];
         }
     },
     created() {
         this.getProductsDropdown();
 
         this.tallyProducts = [...this.tallyProductsProp];
+    },
+    computed: {
+        totalCount() {
+            return this.tallyProducts.reduce((sum, value) => Number(sum) + Number((value.product_count ?? 0)), 0);
+        },
+        totalSold() {
+            return this.tallyProducts.reduce((sum, value) => Number(sum) + Number((value.product_sold ?? 0)), 0);
+        },
+        totalSales() {
+            return this.tallyProducts.reduce((sum, value) => Number(sum) + Number((value.product_sales ?? 0)), 0);
+        }
     }
 }
 </script>

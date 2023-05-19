@@ -84,7 +84,10 @@ export default {
         addTally() {
             this.componentState.isBusy = true;
 
-            console.log(this.tally);
+            this.tally.total_count = this.totalCount;
+            this.tally.total_sold = this.totalSold;
+            this.tally.total_sales = this.totalSales;
+
             ElMessageBox.confirm('Save Product?').then(async () => {
                 await TallyService.create(this.tally).then((response) => {
                     this.errors = {} as TallyErrors;
@@ -100,6 +103,10 @@ export default {
         },
         updateTally() {
             this.componentState.isBusy = true;
+
+            this.tally.total_count = this.totalCount;
+            this.tally.total_sold = this.totalSold;
+            this.tally.total_sales = this.totalSales;
 
             ElMessageBox.confirm("Save Product?").then(async () => {
                 await TallyService.update(this.parameters.id, this.tally).then((response) => {
@@ -142,6 +149,17 @@ export default {
             this.componentState.initialized = true;
         });
     },
+    computed: {
+        totalCount() {
+            return this.tally?.products?.reduce((sum, value) => Number(sum) + Number((value.product_count ?? 0)), 0) ?? 0;
+        },
+        totalSold() {
+            return this.tally?.products?.reduce((sum, value) => Number(sum) + Number((value.product_sold ?? 0)), 0) ?? 0;
+        },
+        totalSales() {
+            return this.tally?.products?.reduce((sum, value) => Number(sum) + Number((value.product_sales ?? 0)), 0) ?? 0;
+        }
+    }
 }
 </script>
     

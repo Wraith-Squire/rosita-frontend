@@ -1,12 +1,12 @@
 <template>
     <el-button @click="open()" type="primary" :size="isEdit ? 'small': 'default'">
-        {{ isEdit ? 'Edit': 'Add' }}
+        {{ isEdit ? 'View': 'Add' }}
     </el-button>
     <el-dialog v-model="form.isVisible" title="Tally Product" :close-on-click-modal="false">
         <div class="tally-product-form">
             <div>
                 <label>Product Name</label>
-                <el-select v-model="tallyProduct.product_id" class="m-2" placeholder="Select" :disabled="componentState.isBusy">
+                <el-select v-model="tallyProduct.product_id" class="m-2" placeholder="Select" :disabled="componentState.isBusy" filterable>
                     <el-option
                         v-for="item in productsDropdown"
                         :key="item.product_id"
@@ -165,12 +165,16 @@ export default {
     },
     computed: {
         madeSold() {
-            if (this.tallyProduct.product_id) return (this.tallyProduct.product_count ?? 0) - (this.tallyProduct.product_unsold ?? 0);
+            if (this.tallyProduct.product_id) {
+                return Number(this.tallyProduct.product_count ?? 0) - Number(this.tallyProduct.product_unsold ?? 0);
+            }
 
             return 0;
         },
         sales() {
-            if (this.tallyProduct.product_id) (this.madeSold ?? 0)*(this.tallyProduct.product_price ?? 0);
+            if (this.tallyProduct.product_id) {
+                return Number(this.madeSold) * Number(this.tallyProduct.product_price);
+            }
 
             return 0;
         }

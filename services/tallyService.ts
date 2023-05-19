@@ -46,4 +46,11 @@ export class TallyService {
             body: payload,
         });
     }
+
+    static exportToExcel(payload?: Record<string, any>) {
+        return $http('api/tally/export/', {
+            method: "GET",
+            params: payload,
+        });
+    }
 }

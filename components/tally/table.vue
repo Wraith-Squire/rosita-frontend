@@ -32,7 +32,7 @@
                 <el-button @click="clearFilters()" :disabled="componentState.isBusy">Clear</el-button>
             </div>
             <div>
-                <el-button :disabled="componentState.isBusy">Export</el-button>
+                <el-button @click="exportToExcel()" :disabled="componentState.isBusy">Export</el-button>
             </div>
             <div></div>
             <div></div>
@@ -112,6 +112,26 @@ export default {
                     this.componentState.isBusy = false;
                 });
             }, 200)
+        },
+        async exportToExcel() {
+            this.componentState.isBusy = true;
+
+            await TallyService.exportToExcel(this.filters).then((response: any) => {
+                console.log(response);
+                const url = URL.createObjectURL(response);
+
+                const link = document.createElement('a')
+                link.href = url
+                link.setAttribute('download', 'tally list.xlsx')
+                document.body.appendChild(link)
+                link.click()
+
+                this.componentState.isBusy = false;
+            }).catch((error) => {
+                this.error = error;
+
+                this.componentState.isBusy = false;
+            });
         },
         clearFilters() {
             this.filters.fromDate = '';

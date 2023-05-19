@@ -19,49 +19,54 @@
                 </div>
                 <div>
                     <label>Made count</label>
-                    <el-input
+                    <el-input-number
                         v-model="tallyProduct.product_count"
-                        type="number"
                         placeholder="Please input"
+                        :controls="false"
                         :disabled="componentState.isBusy"
+                        style="width: 100%;"
                     />
                     <span v-if="errors?.product_count" class="error">{{errors?.product_count[0]}}</span>
                 </div>
                 <div>
                     <label>Made unsold</label>
-                    <el-input
+                    <el-input-number
                         v-model="tallyProduct.product_unsold"
-                        type="number"
                         placeholder="Please input"
+                        :controls="false"
                         :disabled="componentState.isBusy"
+                        style="width: 100%;"
                     />
                     <span v-if="errors?.product_unsold" class="error">{{errors?.product_unsold[0]}}</span>
                 </div>
                 <div>
                     <label>Made Sold</label>
-                    <el-input
+                    <el-input-number
                         v-model="madeSold"
-                        type="number"
                         placeholder="Please input"
+                        :controls="false"
                         :disabled="true"
+                        style="width: 100%;"
                     />
                 </div>
                 <div>
                     <label>Price</label>
-                    <el-input
+                    <el-input-number
                         v-model="tallyProduct.product_price"
-                        type="number"
                         placeholder="Please input"
+                        :controls="false"
                         :disabled="!tallyProduct.product_price_override"
+                        style="width: 100%;"
                     />
                 </div>
                 <div>
                     <label>Sales</label>
-                    <el-input
+                    <el-input-number
                         v-model="sales"
-                        type="number"
                         placeholder="Please input"
+                        :controls="false"
                         :disabled="true"
+                        style="width: 100%;"
                     />
                 </div>
                 <div>
@@ -180,14 +185,14 @@ export default {
     computed: {
         madeSold() {
             if (this.tallyProduct.product_id) {
-                return Number(this.tallyProduct.product_count ?? 0) - Number(this.tallyProduct.product_unsold ?? 0);
+                return Number(Number(this.tallyProduct.product_count ?? 0) - Number(this.tallyProduct.product_unsold ?? 0));
             }
 
             return 0;
         },
         sales() {
             if (this.tallyProduct.product_id) {
-                return Number(this.madeSold) * Number(this.tallyProduct.product_price);
+                return Number(Number(this.madeSold) * Number(this.tallyProduct.product_price));
             }
 
             return 0;

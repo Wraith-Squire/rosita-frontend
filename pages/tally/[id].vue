@@ -88,10 +88,10 @@ export default {
             this.tally.total_sold = this.totalSold;
             this.tally.total_sales = this.totalSales;
 
-            ElMessageBox.confirm('Save Product?').then(async () => {
+            ElMessageBox.confirm('Save Tally?').then(async () => {
                 await TallyService.create(this.tally).then((response) => {
                     this.errors = {} as TallyErrors;
-
+                    console.log(this.tally);
                     this.goToList();
                 }).catch((err) => {
                     console.log(err.response._data.errors)
@@ -108,7 +108,7 @@ export default {
             this.tally.total_sold = this.totalSold;
             this.tally.total_sales = this.totalSales;
 
-            ElMessageBox.confirm("Save Product?").then(async () => {
+            ElMessageBox.confirm("Save Tally?").then(async () => {
                 await TallyService.update(this.parameters.id, this.tally).then((response) => {
                     this.errors = {};
                     this.$router.push('/tally/list');
@@ -151,13 +151,13 @@ export default {
     },
     computed: {
         totalCount() {
-            return this.tally?.products?.reduce((sum, value) => Number(sum) + Number((value.product_count ?? 0)), 0) ?? 0;
+            return Number(this.tally?.products?.reduce((sum, value) => Number(sum) + Number((value.product_count ?? 0)), 0) ?? 0);
         },
         totalSold() {
-            return this.tally?.products?.reduce((sum, value) => Number(sum) + Number((value.product_sold ?? 0)), 0) ?? 0;
+            return Number(this.tally?.products?.reduce((sum, value) => Number(sum) + Number((value.product_sold ?? 0)), 0) ?? 0);
         },
         totalSales() {
-            return this.tally?.products?.reduce((sum, value) => Number(sum) + Number((value.product_sales ?? 0)), 0) ?? 0;
+            return Number(this.tally?.products?.reduce((sum, value) => Number(sum) + Number((value.product_sales ?? 0)), 0) ?? 0);
         }
     }
 }

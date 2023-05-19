@@ -14,21 +14,23 @@
             </div>
             <div>
                 <label>Price</label>
-                <el-input
+                <el-input-number
                     v-model="product.product_price"
-                    type="number"
                     placeholder="Please input"
+                    :controls="false"
                     :disabled="componentState.isBusy"
+                    style="width: 100%;"
                 />
                 <span v-if="errors.product_price" class="error">{{ errors.product_price[0] }}</span>
             </div>
             <div>
                 <label>Cost</label>
-                <el-input
+                <el-input-number
                     v-model="product.product_cost"
-                    type="number"
                     placeholder="Please input"
+                    :controls="false"
                     :disabled="componentState.isBusy"
+                    style="width: 100%;"
                 />
                 <span v-if="errors.product_cost" class="error">{{ errors.product_cost[0] }}</span>
             </div>
@@ -115,7 +117,6 @@ export default {
             });
 
             this.componentState.isBusy = false;
-
         },
         deleteProduct() {
             this.componentState.isBusy = true;
@@ -127,6 +128,8 @@ export default {
                     console.log(error);
                 });
             })
+
+            this.componentState.isBusy = false;
         },
         goToList() {
             this.$router.push('/product/list')

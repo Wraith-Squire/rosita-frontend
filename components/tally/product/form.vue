@@ -2,85 +2,87 @@
     <el-button @click="open()" type="primary" :size="isEdit ? 'small': 'default'">
         {{ isEdit ? 'View': 'Add' }}
     </el-button>
-    <el-dialog v-model="form.isVisible" title="Tally Product" :close-on-click-modal="false">
-        <div class="tally-product-form">
-            <div>
-                <label>Product Name</label>
-                <el-select v-model="tallyProduct.product_id" class="m-2" placeholder="Select" :disabled="componentState.isBusy" filterable>
-                    <el-option
-                        v-for="item in productsDropdown"
-                        :key="item.product_id"
-                        :label="item.product_name"
-                        :value="(item.product_id as number)"
-                        />
-                </el-select>
-                <span v-if="errors?.product_name" class="error">{{errors?.product_name[0]}}</span>
-            </div>
-            <div>
-                <label>Made count</label>
-                <el-input
-                    v-model="tallyProduct.product_count"
-                    type="number"
-                    placeholder="Please input"
-                    :disabled="componentState.isBusy"
-                />
-                <span v-if="errors?.product_count" class="error">{{errors?.product_count[0]}}</span>
-            </div>
-            <div>
-                <label>Made unsold</label>
-                <el-input
-                    v-model="tallyProduct.product_unsold"
-                    type="number"
-                    placeholder="Please input"
-                    :disabled="componentState.isBusy"
-                />
-                <span v-if="errors?.product_unsold" class="error">{{errors?.product_unsold[0]}}</span>
-            </div>
-            <div>
-                <label>Made Sold</label>
-                <el-input
-                    v-model="madeSold"
-                    type="number"
-                    placeholder="Please input"
-                    :disabled="true"
-                />
-            </div>
-            <div>
-                <label>Price</label>
-                <el-input
-                    v-model="tallyProduct.product_price"
-                    type="number"
-                    placeholder="Please input"
-                    :disabled="!override.price"
-                />
-            </div>
-            <div>
-                <label>Sales</label>
-                <el-input
-                    v-model="sales"
-                    type="number"
-                    placeholder="Please input"
-                    :disabled="true"
-                />
-            </div>
-            <div>
+    <teleport to="body">
+        <el-dialog v-model="form.isVisible" title="Tally Product" :close-on-click-modal="false">
+            <div class="tally-product-form">
                 <div>
-                    <label>Override Price</label>
+                    <label>Product Name</label>
+                    <el-select v-model="tallyProduct.product_id" class="m-2" placeholder="Select" :disabled="componentState.isBusy" filterable>
+                        <el-option
+                            v-for="item in productsDropdown"
+                            :key="item.product_id"
+                            :label="item.product_name"
+                            :value="(item.product_id as number)"
+                            />
+                    </el-select>
+                    <span v-if="errors?.product_name" class="error">{{errors?.product_name[0]}}</span>
+                </div>
+                <div>
+                    <label>Made count</label>
+                    <el-input
+                        v-model="tallyProduct.product_count"
+                        type="number"
+                        placeholder="Please input"
+                        :disabled="componentState.isBusy"
+                    />
+                    <span v-if="errors?.product_count" class="error">{{errors?.product_count[0]}}</span>
+                </div>
+                <div>
+                    <label>Made unsold</label>
+                    <el-input
+                        v-model="tallyProduct.product_unsold"
+                        type="number"
+                        placeholder="Please input"
+                        :disabled="componentState.isBusy"
+                    />
+                    <span v-if="errors?.product_unsold" class="error">{{errors?.product_unsold[0]}}</span>
+                </div>
+                <div>
+                    <label>Made Sold</label>
+                    <el-input
+                        v-model="madeSold"
+                        type="number"
+                        placeholder="Please input"
+                        :disabled="true"
+                    />
+                </div>
+                <div>
+                    <label>Price</label>
+                    <el-input
+                        v-model="tallyProduct.product_price"
+                        type="number"
+                        placeholder="Please input"
+                        :disabled="!tallyProduct.product_price_override"
+                    />
+                </div>
+                <div>
+                    <label>Sales</label>
+                    <el-input
+                        v-model="sales"
+                        type="number"
+                        placeholder="Please input"
+                        :disabled="true"
+                    />
+                </div>
+                <div>
                     <div>
-                        <el-switch v-model="override.price" active-text="Yes" inactive-text="No"/>
+                        <label>Override Price</label>
+                        <div>
+                            <el-switch v-model="tallyProduct.product_price_override" active-text="Yes" inactive-text="No"/>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <template #footer>
-          <span class="dialog-footer">
-            <el-button @click="form.isVisible = false" :disabled="componentState.isBusy">Cancel</el-button>
-            <el-button type="primary" @click="validate()" :disabled="componentState.isBusy">
-              Confirm
-            </el-button>
-          </span>
-        </template>
-      </el-dialog>
+            <template #footer>
+              <span class="dialog-footer">
+                <el-button @click="form.isVisible = false" :disabled="componentState.isBusy">Cancel</el-button>
+                <el-button type="primary" @click="validate()" :disabled="componentState.isBusy">
+                  Confirm
+                </el-button>
+              </span>
+            </template>
+          </el-dialog>
+    </teleport>
 </template>
     
 <script lang='ts'>
@@ -114,9 +116,6 @@ export default {
                 isBusy: false
             },
             errors: {} as TallyProductErrors,
-            override: {
-                price: false
-            }
         }
     },
     methods: {
@@ -158,7 +157,7 @@ export default {
 
                 if (newValue?.product_id) {
 
-                    if (this.override.price == false) {
+                    if (this.tallyProduct.product_price_override != true) {
                         this.tallyProduct.product_price = this.productsDropdown.filter((product) => product.product_id == this.tallyProduct.product_id)[0]?.product_price ?? 0;
                     }
                     

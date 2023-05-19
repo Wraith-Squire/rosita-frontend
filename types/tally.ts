@@ -42,6 +42,7 @@ export interface TallyProduct {
     product_cost?: number,
     product_sales?: number,
     product_income?: number,
+    product_price_override?: boolean,
 }
 
 export interface TallyProductErrors {

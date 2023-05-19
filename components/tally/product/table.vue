@@ -3,7 +3,7 @@
         <div>
             <TallyProductForm :products-dropdown="dropdown.products" v-if="dropdown.isLoaded" @tally-product-add="getAddedTallyProduct"></TallyProductForm>
         </div>
-        <el-table :data="tallyProducts" stripe style="width: 100%" :lazy="true">
+        <el-table :data="tallyProducts" style="width: 100%" type="index">
             <el-table-column prop="product_name" label="Product Name" />
             <el-table-column prop="product_count" label="Made" />
             <el-table-column prop="product_sold" label="Sold" />
@@ -11,7 +11,7 @@
             <el-table-column label="Actions">
                 <template #default="scope">
                     <div class="table-action-buttons">
-                        <TallyProductForm :is-edit="true"></TallyProductForm>
+                        <TallyProductForm :is-edit="true" :products-dropdown="dropdown.products" :tally-product-prop="scope.row" @tally-product-edit="getEditedTallyProduct($event, scope.$index )"></TallyProductForm>
                     </div>
                 </template>
             </el-table-column>
@@ -26,7 +26,7 @@ import {TallyProduct} from '~/types/tally';
 
 export default {
     props: {
-        tallyProducts: {
+        tallyProductsProp: {
             type: Array<TallyProduct>,
             default: [] as Array<TallyProduct>
         }
@@ -36,7 +36,8 @@ export default {
             dropdown: {
                 products: [] as Array<Product>,
                 isLoaded: false
-            }
+            },
+            tallyProducts: [] as Array<TallyProduct>
         }
     },
     methods: {
@@ -50,13 +51,15 @@ export default {
                 });
         },
         getAddedTallyProduct(tallyProduct: TallyProduct) {
-            console.log(tallyProduct);
             this.tallyProducts.push(tallyProduct);
-            console.log(this.tallyProducts);
+        },
+        getEditedTallyProduct(tallyProduct: TallyProduct, index: number) {
+            this.tallyProducts[index] = tallyProduct;
         }
     },
     created() {
         this.getProductsDropdown();
+        this.tallyProducts = this.tallyProductsProp;
     }
 }
 </script>

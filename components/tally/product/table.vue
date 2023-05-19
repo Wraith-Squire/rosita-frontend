@@ -33,6 +33,7 @@ export default {
             default: [] as Array<TallyProduct>
         }
     },
+    emit: ['TallyProductsUpdated'],
     data() {
         return {
             dropdown: {
@@ -54,16 +55,17 @@ export default {
         },
         getAddedTallyProduct(tallyProduct: TallyProduct) {
             this.tallyProducts.push(tallyProduct);
+            this.$emit('TallyProductsUpdated', this.tallyProducts);
         },
         getEditedTallyProduct(tallyProduct: TallyProduct, index: number) {
             this.tallyProducts[index] = tallyProduct;
+            this.$emit('TallyProductsUpdated', this.tallyProducts);
         },
         deleteTallyProduct(index: number) {
             ElMessageBox.confirm("Are you sure you want to delete the tally for this product?").then(() => {
                 this.tallyProducts.splice(index, 1);
-            }).catch((error) => {
-                
-            })
+                this.$emit('TallyProductsUpdated', this.tallyProducts);
+            });
         }
     },
     created() {

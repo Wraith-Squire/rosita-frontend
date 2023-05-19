@@ -13,6 +13,7 @@
                     value-format="YYYY-MM-DD"
                     :disabled="pageState.isBusy"
                 />
+                <span v-if="errors.date_tallied" class="error">{{errors.date_tallied[0]}}</span>
             </div>
             <div>
                 <label>Comment</label>
@@ -22,18 +23,25 @@
                     type="textarea"
                     placeholder="Please input"
                 />
+                <span v-if="errors.comment" class="error">{{errors.comment[0]}}</span>
             </div>
             <div class="tally-form-products">
                 <label>Products</label>
-                <TallyProductTable :tally-products-prop="tally.products"></TallyProductTable>
+                <TallyProductTable v-if="componentState.initialized" :tally-products-prop="tally.products" @tally-products-updated="grabTallyProductsUpdate"></TallyProductTable>
+                <span v-if="errors.products" class="error">{{errors.products[0]}}</span>
             </div>
+        </div>
+        <div class="tally-buttons">
+            <el-button type="success" @click="parameters.id == 0 ? addTally(): updateTally()" :disabled="componentState.isBusy">Save</el-button>
+            <el-button type="default" :disabled="componentState.isBusy" @click="goToList()">Cancel</el-button>
+            <el-button type="danger" :disabled="componentState.isBusy" @click="deleteTally()" v-if="parameters.id != 0">Delete</el-button>
         </div>
     </div>
 </template>
     
 <script lang='ts'>
 import {TallyService} from '~/services/tallyService';
-import { Tally } from '~/types/tally';
+import { Tally, TallyErrors, TallyProduct } from '~/types/tally';
 
 export default {
     data() {
@@ -45,15 +53,23 @@ export default {
             error: {},
             parameters: {
                 id: 0
-            }
+            },
+            componentState: {
+                isBusy: false,
+                initialized: false,
+            },
+            errors: {} as TallyErrors
         }
     },
     methods: {
         async getTally() {
+            this.componentState.isBusy = true;
+
             if (this.parameters.id == 0) return;
 
             await TallyService.details(this.parameters.id).then((response) => {
                 const data = response as unknown as Record<string, any>;
+                data.products = JSON.parse(data.products)??[];
 
                 this.tally = data;
 
@@ -64,11 +80,58 @@ export default {
                 this.error = error
                 this.$router.push('/tally/list');
             });
+
+            this.componentState.isBusy = false;
+        },
+        addTally() {
+            this.componentState.isBusy = true;
+
+            console.log(this.tally);
+            ElMessageBox.confirm('Save Product?').then(async () => {
+                await TallyService.create(this.tally).then((response) => {
+                    this.errors = {} as TallyErrors;
+
+                    this.goToList();
+                }).catch((err) => {
+                    console.log(err.response._data.errors)
+                    this.errors = err.response._data.errors;
+                })
+            });
+
+            this.componentState.isBusy = false;
+        },
+        updateTally() {
+            this.componentState.isBusy = true;
+
+            ElMessageBox.confirm("Save Product?").then(async () => {
+                await TallyService.update(this.parameters.id, this.tally).then((response) => {
+                    this.errors = {};
+                    this.$router.push('/tally/list');
+                    console.log({response: response});
+                }).catch((err) => {
+                    this.errors = err.response._data.errors;
+                });
+            }).catch((error) => {
+                console.log(error);
+            });
+
+            this.componentState.isBusy = false;
+        },
+        deleteTally() {
+
+        },
+        goToList() {
+            this.$router.push('/tally/list');
+        },
+        grabTallyProductsUpdate(tallyProducts: Array<TallyProduct>) {
+            this.tally.products = tallyProducts;
         }
     },
     created() {
         this.parameters.id = this.$route.params.id as unknown as number;
-        this.getTally();
+        this.getTally().then(() => {
+            this.componentState.initialized = true;
+        });
     },
 }
 </script>
@@ -88,7 +151,10 @@ export default {
     margin: .2em;
 }
 
-el-date-picker {
-    width: 100vw;
+.tally-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 1em;
 }
 </style>

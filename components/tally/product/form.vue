@@ -111,7 +111,7 @@ export default {
     methods: {
         open() {
             if (this.isEdit) {
-                this.tallyProduct = this.tallyProductProp as TallyProduct;
+                this.tallyProduct = {...this.tallyProductProp} as TallyProduct;
             } else {
                 this.tallyProduct = {} as TallyProduct
             }

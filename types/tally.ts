@@ -4,7 +4,7 @@ export interface BaseTally {
     date_tallied?: Date,
     comment?: string,
     status?: TallyStatus,
-    products?: Array<Record<string, any>>,
+    products?: Array<TallyProduct>,
     total_count?: number,
     total_sold?: number,
     total_unsold?: number,

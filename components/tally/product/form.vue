@@ -1,8 +1,8 @@
 <template>
-    <el-button @click="form.isVisible = true" type="primary" :size="isEdit ? 'small': 'default'">
+    <el-button @click="open()" type="primary" :size="isEdit ? 'small': 'default'">
         {{ isEdit ? 'Edit': 'Add' }}
     </el-button>
-    <el-dialog v-model="form.isVisible" title="Tally Product">
+    <el-dialog v-model="form.isVisible" title="Tally Product" :close-on-click-modal="false">
         <div class="tally-product-form">
             <div>
                 <label>Product Name</label>
@@ -78,14 +78,13 @@
 <script lang='ts'>
 import { TallyService } from '~/services/tallyService';
 import { Product } from '~/types/product';
-import { TallyProduct, TallyProductErrors } from '~/types/tally';
+import { Tally, TallyProduct, TallyProductErrors } from '~/types/tally';
 
 export default {
     props: {
         tallyProductProp: {
             type: Object,
-            default: {},
-            required: false
+            required: false,
         },
         productsDropdown: {
             type: Array<Product>,
@@ -110,6 +109,15 @@ export default {
         }
     },
     methods: {
+        open() {
+            if (this.isEdit) {
+                this.tallyProduct = this.tallyProductProp as TallyProduct;
+            } else {
+                this.tallyProduct = {} as TallyProduct
+            }
+
+            this.form.isVisible = true;
+        },
         async validate() {
             this.componentState.isBusy = true;
 
@@ -123,8 +131,6 @@ export default {
                     this.$emit("TallyProductAdd", this.tallyProduct);
                 }
 
-                this.tallyProduct = {} as TallyProduct;
-
                 this.form.isVisible = false;
             }).catch((err) => {
                 console.log(err.response)
@@ -134,18 +140,14 @@ export default {
             this.componentState.isBusy = false;
         }
     },
-    created() {
-        if (this.isEdit)
-            this.tallyProduct = {...this.tallyProductProp} as TallyProduct;
-    },
     watch: {
         tallyProduct: {
             handler(newValue: TallyProduct, oldValue: TallyProduct) {
                 this.componentState.isBusy = true;
 
                 if (newValue?.product_id) {
-                    this.tallyProduct.product_price = this.productsDropdown.filter((product) => product.product_id == this.tallyProduct.product_id)[0]?.product_price??0;
-                    this.tallyProduct.product_name = this.productsDropdown.filter((product) => product.product_id == this.tallyProduct.product_id)[0]?.product_name??'';
+                    this.tallyProduct.product_price = this.productsDropdown.filter((product) => product.product_id == this.tallyProduct.product_id)[0]?.product_price ?? 0;
+                    this.tallyProduct.product_name = this.productsDropdown.filter((product) => product.product_id == this.tallyProduct.product_id)[0]?.product_name ?? '';
                 }
 
                 if (newValue?.product_count == null) {
@@ -163,12 +165,12 @@ export default {
     },
     computed: {
         madeSold() {
-            if (this.tallyProduct.product_id) return (this.tallyProduct.product_count??0) - (this.tallyProduct.product_unsold??0);
+            if (this.tallyProduct.product_id) return (this.tallyProduct.product_count ?? 0) - (this.tallyProduct.product_unsold ?? 0);
 
             return 0;
         },
         sales() {
-            if (this.tallyProduct.product_id) (this.madeSold??0)*(this.tallyProduct.product_price??0);
+            if (this.tallyProduct.product_id) (this.madeSold ?? 0)*(this.tallyProduct.product_price ?? 0);
 
             return 0;
         }

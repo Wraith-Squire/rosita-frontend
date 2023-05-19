@@ -3,15 +3,16 @@
         <div>
             <TallyProductForm :products-dropdown="dropdown.products" v-if="dropdown.isLoaded" @tally-product-add="getAddedTallyProduct"></TallyProductForm>
         </div>
-        <el-table :data="tallyProducts" style="width: 100%" type="index">
+        <el-table :data="tallyProducts" style="width: 100%" type="index" :lazy="true">
             <el-table-column prop="product_name" label="Product Name" />
             <el-table-column prop="product_count" label="Made" />
             <el-table-column prop="product_sold" label="Sold" />
             <el-table-column prop="product_sales" label="Sales" />
             <el-table-column label="Actions">
                 <template #default="scope">
-                    <div class="table-action-buttons">
-                        <TallyProductForm :is-edit="true" :products-dropdown="dropdown.products" :tally-product-prop="scope.row" @tally-product-edit="getEditedTallyProduct($event, scope.$index )"></TallyProductForm>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: .5em;width: 100%;">
+                        <TallyProductForm :is-edit="true" :products-dropdown="dropdown.products" :tally-product-prop.sync="scope.row" @tally-product-edit="getEditedTallyProduct($event, scope.$index )"></TallyProductForm>
+                        <el-button size="small" type="danger" @click="deleteTallyProduct(scope.$index)">Delete</el-button>
                     </div>
                 </template>
             </el-table-column>
@@ -20,6 +21,7 @@
 </template>
     
 <script lang='ts'>
+import { ElPopconfirm } from 'element-plus';
 import { ProductService } from '~/services/productService';
 import { Product } from '~/types/product';
 import {TallyProduct} from '~/types/tally';
@@ -55,11 +57,19 @@ export default {
         },
         getEditedTallyProduct(tallyProduct: TallyProduct, index: number) {
             this.tallyProducts[index] = tallyProduct;
+        },
+        deleteTallyProduct(index: number) {
+            ElMessageBox.confirm("Are you sure you want to delete the tally for this product?").then(() => {
+                this.tallyProducts.splice(index, 1);
+            }).catch((error) => {
+                
+            })
         }
     },
     created() {
         this.getProductsDropdown();
-        this.tallyProducts = this.tallyProductsProp;
+
+        this.tallyProducts = [...this.tallyProductsProp];
     }
 }
 </script>

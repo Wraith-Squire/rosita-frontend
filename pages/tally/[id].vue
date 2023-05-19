@@ -25,7 +25,7 @@
             </div>
             <div class="tally-form-products">
                 <label>Products</label>
-                <TallyProductTable></TallyProductTable>
+                <TallyProductTable :tally-products-prop="tally.products"></TallyProductTable>
             </div>
         </div>
     </div>

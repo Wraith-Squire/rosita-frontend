@@ -8,7 +8,7 @@
                     :rows="6"
                     type="text"
                     placeholder="Please input"
-                    @input="getProducts()"
+                    @input="getProducts(true)"
                 />
             </div>
             <div></div>
@@ -42,7 +42,6 @@
 </template>
     
 <script lang='ts'>
-import { thumbProps } from 'element-plus';
 import { ProductService } from '~/services/productService';
 import { Product } from '~/types/product';
 
@@ -68,8 +67,12 @@ export default {
         }
     },
     methods: {
-        async getProducts() {
+        async getProducts(resetPage = false) {
             this.componentState.isBusy = true;
+
+            if (resetPage) {
+                this.filters.currentPage = 1;
+            }
 
             if (this.debounce.timer) clearTimeout(this.debounce.timer);
 

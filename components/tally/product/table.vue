@@ -21,7 +21,6 @@
 </template>
     
 <script lang='ts'>
-import { ElPopconfirm } from 'element-plus';
 import { ProductService } from '~/services/productService';
 import { Product } from '~/types/product';
 import {TallyProduct} from '~/types/tally';

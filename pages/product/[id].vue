@@ -44,7 +44,6 @@
 </template>
     
 <script lang='ts'>
-import { ElDialog } from 'element-plus';
 import { ProductService } from '~/services/productService';
 import { Product, ProductErrors } from '~/types/product';
 

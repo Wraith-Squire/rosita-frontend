@@ -67,7 +67,7 @@
 </template>
     
 <script lang='ts'>
-import {TallyService} from '~/services/tallyService';
+import { TallyService } from '~/services/tallyService';
 import { Tally } from '~/types/tally';
 
 export default {
@@ -93,8 +93,12 @@ export default {
         }
     },
     methods: {
-        async getTallies() {
+        async getTallies(resetPage = false) {
             this.componentState.isBusy = true;
+
+            if (resetPage) {
+                this.filters.currentPage = 1;
+            }
 
             if (this.debounce.timer) clearTimeout(this.debounce.timer);
 

@@ -1,7 +1,5 @@
 <template>
-    <Teleport to="body">
-        <NavigationMenu style="position: fixed; top: 0px; left: 0px; z-index: 7;"/>
-    </Teleport>
+    <NavigationMenu style="position: fixed; top: 0px; left: 0px; z-index: 7;"/>
     <div id="default-layout-container">
         <div id="default-layout-left">
         </div>

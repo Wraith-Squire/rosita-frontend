@@ -8,7 +8,7 @@
                     v-model="tally.date_tallied"
                     type="date"
                     placeholder="Pick a day"
-                    size="default"
+                    :size="elementSize"
                     format="MM-DD-YYYY"
                     value-format="YYYY-MM-DD"
                     :disabled="pageState.isBusy"
@@ -22,6 +22,7 @@
                     :rows="6"
                     type="textarea"
                     placeholder="Please input"
+                    :size="elementSize"
                 />
                 <span v-if="errors.comment" class="error">{{errors.comment[0]}}</span>
             </div>
@@ -32,9 +33,9 @@
             </div>
         </div>
         <div class="tally-buttons">
-            <el-button type="success" @click="parameters.id == 0 ? addTally(): updateTally()" :disabled="componentState.isBusy">Save</el-button>
-            <el-button type="default" :disabled="componentState.isBusy" @click="goToList()">Cancel</el-button>
-            <el-button type="danger" :disabled="componentState.isBusy" @click="deleteTally()" v-if="parameters.id != 0">Delete</el-button>
+            <el-button type="success" @click="parameters.id == 0 ? addTally(): updateTally()" :disabled="componentState.isBusy" :size="elementSize">Save</el-button>
+            <el-button type="default" :disabled="componentState.isBusy" @click="goToList()" :size="elementSize">Cancel</el-button>
+            <el-button type="danger" :disabled="componentState.isBusy" @click="deleteTally()" v-if="parameters.id != 0" :size="elementSize">Delete</el-button>
         </div>
     </div>
 </template>
@@ -58,7 +59,8 @@ export default {
                 isBusy: false,
                 initialized: false,
             },
-            errors: {} as TallyErrors
+            errors: {} as TallyErrors,
+            device: useDevice(),
         }
     },
     methods: {
@@ -91,10 +93,8 @@ export default {
             ElMessageBox.confirm('Save Tally?').then(async () => {
                 await TallyService.create(this.tally).then((response) => {
                     this.errors = {} as TallyErrors;
-                    console.log(this.tally);
                     this.goToList();
                 }).catch((err) => {
-                    console.log(err.response._data.errors)
                     this.errors = err.response._data.errors;
                 })
             });
@@ -112,7 +112,6 @@ export default {
                 await TallyService.update(this.parameters.id, this.tally).then((response) => {
                     this.errors = {};
                     this.$router.push('/tally/list');
-                    console.log({response: response});
                 }).catch((err) => {
                     this.errors = err.response._data.errors;
                 });
@@ -158,6 +157,9 @@ export default {
         },
         totalSales() {
             return Number(this.tally?.products?.reduce((sum, value) => Number(sum) + Number((value.product_sales ?? 0)), 0) ?? 0);
+        },
+        elementSize() {
+            return this.device.isMobileOrTablet ? "small": "default";
         }
     }
 }

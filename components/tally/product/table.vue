@@ -3,7 +3,7 @@
         <div>
             <TallyProductForm :products-dropdown="dropdown.products" v-if="dropdown.isLoaded" @tally-product-add="getAddedTallyProduct"></TallyProductForm>
         </div>
-        <el-table :data="tallyProducts" style="width: 100%" type="index" :lazy="true" :summary-method="getSummaries" show-summary v-loading="componentState.isBusy" size="small">
+        <el-table :data="tallyProducts" style="width: 100%" type="index" :lazy="true" :summary-method="getSummaries" show-summary v-loading="componentState.isBusy" :size="elementSize">
             <el-table-column prop="product_name" label="Product Name" width="100px"/>
             <el-table-column prop="product_count" label="Made" />
             <el-table-column prop="product_unsold" label="Unsold" />
@@ -13,7 +13,7 @@
                 <template #default="scope">
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: .5em;width: 100%;">
                         <TallyProductForm :is-edit="true" :products-dropdown="dropdown.products" :tally-product-prop.sync="scope.row" @tally-product-edit="getEditedTallyProduct($event, scope.$index )"></TallyProductForm>
-                        <el-button size="small" type="danger" @click="deleteTallyProduct(scope.$index)">Delete</el-button>
+                        <el-button type="danger" @click="deleteTallyProduct(scope.$index)" :size="elementSize">Delete</el-button>
                     </div>
                 </template>
             </el-table-column>
@@ -43,7 +43,8 @@ export default {
             tallyProducts: [] as Array<TallyProduct>,
             componentState: {
                 isBusy: false
-            }
+            },
+            device: useDevice(),
         }
     },
     methods: {
@@ -91,6 +92,9 @@ export default {
         },
         totalSales() {
             return this.tallyProducts.reduce((sum, value) => Number(sum) + Number((value.product_sales ?? 0)), 0);
+        },
+        elementSize() {
+            return this.device.isMobileOrTablet ? "small": "default";
         }
     }
 }

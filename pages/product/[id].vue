@@ -10,6 +10,7 @@
                     placeholder="Please input"
                     :disabled="componentState.isBusy"
                     style="width: 100%;"
+                    :size="elementSize"
                 />
                 <span v-if="errors.product_name" class="error">{{errors.product_name[0]}}</span>
             </div>
@@ -21,6 +22,7 @@
                     :controls="false"
                     :disabled="componentState.isBusy"
                     style="width: 100%;"
+                    :size="elementSize"
                 />
                 <span v-if="errors.product_price" class="error">{{ errors.product_price[0] }}</span>
             </div>
@@ -32,14 +34,15 @@
                     :controls="false"
                     :disabled="componentState.isBusy"
                     style="width: 100%;"
+                    :size="elementSize"
                 />
                 <span v-if="errors.product_cost" class="error">{{ errors.product_cost[0] }}</span>
             </div>
         </div>
         <div class="product-buttons">
-            <el-button type="success" @click="parameters.id == 0 ? addProduct(): updateProduct()" :disabled="componentState.isBusy">Save</el-button>
-            <el-button type="default" :disabled="componentState.isBusy" @click="goToList()">Cancel</el-button>
-            <el-button type="danger" :disabled="componentState.isBusy" @click="deleteProduct()" v-if="parameters.id != 0">Delete</el-button>
+            <el-button type="success" @click="parameters.id == 0 ? addProduct(): updateProduct()" :disabled="componentState.isBusy" :size="elementSize">Save</el-button>
+            <el-button type="default" :disabled="componentState.isBusy" @click="goToList()" :size="elementSize">Cancel</el-button>
+            <el-button type="danger" :disabled="componentState.isBusy" @click="deleteProduct()" v-if="parameters.id != 0" :size="elementSize">Delete</el-button>
         </div>
     </div>
 </template>
@@ -61,7 +64,8 @@ export default {
             },
             parameters: {
                 id: 0
-            }
+            },
+            device: useDevice(),
         }
     },
     methods: {
@@ -108,7 +112,6 @@ export default {
                 await ProductService.update(this.parameters.id, this.product).then((response) => {
                     this.errors = {};
                     this.$router.push('/product/list');
-                    console.log({response: response});
                 }).catch((err) => {
                     this.errors = err.response._data.errors;
                 });
@@ -140,6 +143,11 @@ export default {
 
         this.getProduct();
     },
+    computed: {
+        elementSize() {
+            return this.device.isMobileOrTablet ? "small": "default";
+        }
+    }
 }
 </script>
     

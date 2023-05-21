@@ -110,6 +110,7 @@ export default {
                 },
                 mobile: {
                     table: {
+                        width: "100%"
                     } as CSSProperties,
                     filter: {
                         display: "flex",
@@ -156,7 +157,6 @@ export default {
             this.componentState.isBusy = true;
 
             await TallyService.exportToExcel(this.filters).then((response: any) => {
-                console.log(response);
                 const url = URL.createObjectURL(response);
 
                 const link = document.createElement('a')

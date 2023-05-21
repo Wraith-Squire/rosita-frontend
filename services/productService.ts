@@ -24,7 +24,6 @@ export class ProductService {
 
     static update(id: number, payload: Record<string, any>) {
         payload.id = id;
-        console.log(payload);
 
         return $http('api/product/update/', {
             method: "PUT",

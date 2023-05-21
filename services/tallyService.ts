@@ -25,7 +25,6 @@ export class TallyService {
 
     static update(id: number, payload: Record<string, any>) {
         payload.id = id;
-        console.log(payload);
 
         return $http('api/tally/update/', {
             method: "PUT",

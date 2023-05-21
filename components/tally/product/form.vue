@@ -1,5 +1,5 @@
 <template>
-    <el-button @click="open()" type="primary" :size="isEdit ? 'small': 'default'">
+    <el-button @click="open()" type="primary" :size="isEdit ? 'small': elementSize">
         {{ isEdit ? 'View': 'Add' }}
     </el-button>
     <teleport to="body">
@@ -80,8 +80,8 @@
             </div>
             <template #footer>
               <span class="dialog-footer">
-                <el-button @click="form.isVisible = false" :disabled="componentState.isBusy">Cancel</el-button>
-                <el-button type="primary" @click="validate()" :disabled="componentState.isBusy">
+                <el-button @click="form.isVisible = false" :disabled="componentState.isBusy" :size="elementSize">Cancel</el-button>
+                <el-button type="primary" @click="validate()" :disabled="componentState.isBusy" :size="elementSize">
                   Confirm
                 </el-button>
               </span>
@@ -121,6 +121,7 @@ export default {
                 isBusy: false
             },
             errors: {} as TallyProductErrors,
+            device: useDevice(),
         }
     },
     methods: {
@@ -148,7 +149,6 @@ export default {
 
                 this.form.isVisible = false;
             }).catch((err) => {
-                console.log(err.response)
                 this.errors = err.response._data.errors;
             });
 
@@ -196,6 +196,9 @@ export default {
             }
 
             return 0;
+        },
+        elementSize() {
+            return this.device.isMobileOrTablet ? "small": "default";
         }
     }
 }
@@ -205,6 +208,7 @@ export default {
     .tally-product-form {
         display: flex;
         flex-direction: column;
+        gap: 0.5em;
     }
 
     .tally-product-form > div {

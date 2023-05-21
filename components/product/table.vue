@@ -1,23 +1,23 @@
 <template>
     <div id="product-table">
-        <div class="product-table-filter">
+        <div :style="device.isMobileOrTablet ? styles.mobile.filter: styles.default.filter" class="product-table-filter">
             <div style="width: 280px;">
                 <label>Search</label>
                 <el-input
                     v-model="filters.search"
                     :rows="6"
                     type="text"
+                    :size="elementSize"
                     placeholder="Please input"
                     @input="getProducts(true)"
-                    style="width: 100%;"
                 />
             </div>
             <div>
-                <el-button type="primary" :disabled="componentState.isBusy" @click="goToForm()"  style="width: 6em">Add</el-button>
+                <el-button type="primary" :disabled="componentState.isBusy" @click="goToForm()"  style="width: 6em" :size="elementSize">Add</el-button>
             </div>
         </div>
         <div>
-            <el-table :data="products" stripe style="width: 100%" v-loading="componentState.isBusy" size="small">
+            <el-table :data="products" stripe style="width: 100%" v-loading="componentState.isBusy" :size="elementSize">
                 <el-table-column prop="product_name" label="Name" />
                 <el-table-column prop="product_price" label="Price" />
                 <el-table-column prop="product_cost" label="Cost" />
@@ -31,7 +31,7 @@
             </el-table>
         </div>
         <div class="product-table-paginator">
-            <el-pagination layout="prev, pager, next" :page-count="pagination.pageCount" v-model:current-page="filters.currentPage" @current-change="getProducts()"  />
+            <el-pagination layout="prev, pager, next" :page-count="pagination.pageCount" v-model:current-page="filters.currentPage" @current-change="getProducts()" :size="elementSize"/>
         </div>
     </div>
 </template>
@@ -39,6 +39,7 @@
 <script lang='ts'>
 import { ProductService } from '~/services/productService';
 import { Product } from '~/types/product';
+import { CSSProperties } from 'nuxt/dist/app/compat/capi';
 
 export default {
     data() {
@@ -58,7 +59,41 @@ export default {
             error: {},
             debounce: {
                 timer: null as any
-            }
+            },
+            device: useDevice(),
+            styles: {
+                default: {
+                    table: {
+                        width: "100%"
+                    } as CSSProperties,
+                    filter: {
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "end",
+                        flexWrap: "wrap",
+                        gap: ".5em",
+                        justifyContent: "flex-start",
+                        marginBottom: "2em"
+                    } as CSSProperties
+                },
+                mobile: {
+                    table: {
+                        width: "100%"
+                    } as CSSProperties,
+                    filter: {
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "start",
+                        justifyContent: "flex-start",
+                        marginBottom: "2em"
+                    } as CSSProperties
+                }
+            },
+        }
+    },
+    computed: {
+        elementSize() {
+            return this.device.isMobileOrTablet ? "small": "default";
         }
     },
     methods: {

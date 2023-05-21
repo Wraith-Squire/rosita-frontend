@@ -53,5 +53,6 @@ body {
 
 .nav-title {
     font-size: 36px;
+    text-align: center;
 }
 </style>

@@ -12,12 +12,6 @@
                     style="width: 100%;"
                 />
             </div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
             <div>
                 <el-button type="primary" :disabled="componentState.isBusy" @click="goToForm()"  style="width: 6em">Add</el-button>
             </div>
@@ -106,15 +100,12 @@ export default {
 </script>
     
 <style scoped>
-#product-table {
-    width: 100%;
-}
 .product-table-filter {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr) repeat(6,.5fr);
+    display: flex;
+    flex-direction: row;
     align-items: end;
     gap: .5em;
-    justify-content: space-between;
+    justify-content: start;
     margin-bottom: 2em;
 }
 

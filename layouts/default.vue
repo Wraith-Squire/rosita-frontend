@@ -1,7 +1,6 @@
 <template>
+    <NavigationMenu style="position: sticky; top: 0px; left: 0px;"/>
     <div id="default-layout-container">
-        <NavigationMenu style="position:fixed; top: 0px; left: 0px;"/>
-
         <div id="default-layout-left">
         </div>
         <div id="default-layout-center">
@@ -47,8 +46,8 @@ body {
         display: none;
     }
 
-    #default-layout-container {
-        width: 100%;
+    label {
+        font-size: .8em;
     }
 }
 </style>

@@ -1,13 +1,13 @@
 <template>
     <div id="tally-table">
-        <div class="tally-table-filter">
+        <div :style="device.isMobileOrTablet ? styles.mobile.filter: styles.default.filter" class="tally-table-filter">
             <div>
                 <label>From Date</label>
                 <el-date-picker
                     v-model="filters.fromDate"
                     type="date"
                     placeholder="Pick a day"
-                    size="default"
+                    :size="elementSize"
                     format="MM-DD-YYYY"
                     value-format="YYYY-MM-DD"
                     :disabled="componentState.isBusy"
@@ -19,39 +19,40 @@
                     v-model="filters.toDate"
                     type="date"
                     placeholder="Pick a day"
-                    size="default"
+                    :size="elementSize"
                     format="MM-DD-YYYY"
                     value-format="YYYY-MM-DD"
                     :disabled="componentState.isBusy"
                 />
             </div>
-            <div>
-                <el-button @click="getTallies()" :disabled="componentState.isBusy">Filter</el-button>
-            </div>
-            <div>
-                <el-button @click="clearFilters()" :disabled="componentState.isBusy">Clear</el-button>
-            </div>
-            <div>
-                <el-button @click="exportToExcel()" :disabled="componentState.isBusy">Export</el-button>
-            </div>
-            <div></div>
-            <div></div>
-            <div>
-                <el-button type="primary" :disabled="componentState.isBusy" @click="goToForm()" style="width: 6em">Add</el-button>
+            <div class="table-filter-buttons">
+                <div>
+                    <el-button @click="getTallies()" :disabled="componentState.isBusy" :size="elementSize">Filter</el-button>
+                </div>
+                <div>
+                    <el-button @click="clearFilters()" :disabled="componentState.isBusy" :size="elementSize">Clear</el-button>
+                </div>
+                <div>
+                    <el-button @click="exportToExcel()" :disabled="componentState.isBusy" :size="elementSize">Export</el-button>
+                </div>
+                <div>
+                    <el-button type="primary" :disabled="componentState.isBusy" @click="goToForm()" style="width: 6em" :size="elementSize">Add</el-button>
+                </div>
             </div>
         </div>
         <div>
-            <el-table :data="tallies" stripe style="width: 100%" v-loading="componentState.isBusy" size="small">
-                <el-table-column label="Date Tallied" >
+            <el-table :data="tallies" stripe :style="device.isMobile ? styles.mobile.table: styles.default.table" v-loading="componentState.isBusy" :size="elementSize">
+                <el-table-column label="Date Tallied" :width="device.isMobile ? '90px': 'auto'">
                     <template #default="scope">
                         {{ new Date(scope.row.date_tallied).toLocaleDateString() }}
+                        <div style="font-size: .8em;">Comment:</div> 
+                        <div style="font-size: .8em;"><i>{{ scope.row.comment }}</i></div>
                     </template>
                 </el-table-column>
-                <el-table-column prop="comment" label="Comment" />
-                <el-table-column prop="total_count" label="Made" />
-                <el-table-column prop="total_sold" label="Sold" />
-                <el-table-column prop="total_sales" label="Sales" />
-                <el-table-column label="Actions">
+                <el-table-column prop="total_count" label="Made" :width="device.isMobile ? '50px': 'auto'"/>
+                <el-table-column prop="total_sold" label="Sold" :width="device.isMobile ? '50px': 'auto'"/>
+                <el-table-column prop="total_sales" label="Sales" :width="device.isMobile ? '50px': 'auto'"/>
+                <el-table-column label="Actions" :width="device.isMobile ? '80px': 'auto'">
                     <template #default="scope">
                         <div class="table-action-buttons">
                             <el-button size="small" type="success" @click="goToForm(scope.row.tally_id)">View</el-button>
@@ -61,7 +62,7 @@
             </el-table>
         </div>
         <div class="tally-table-paginator">
-            <el-pagination layout="prev, pager, next" :page-count="pagination.pageCount" v-model:current-page="filters.currentPage" @current-change="getTallies()"/>
+            <el-pagination layout="prev, pager, next" :page-count="pagination.pageCount" v-model:current-page="filters.currentPage" @current-change="getTallies()" :size="elementSize"/>
         </div>
     </div>
 </template>
@@ -69,6 +70,7 @@
 <script lang='ts'>
 import { TallyService } from '~/services/tallyService';
 import { Tally } from '~/types/tally';
+import { CSSProperties } from 'nuxt/dist/app/compat/capi';
 
 export default {
     data() {
@@ -89,7 +91,40 @@ export default {
             error: {},
             debounce: {
                 timer: null as any
-            }
+            },
+            device: useDevice(),
+            styles: {
+                default: {
+                    table: {
+                        width: "100%"
+                    } as CSSProperties,
+                    filter: {
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "end",
+                        flexWrap: "wrap",
+                        gap: ".5em",
+                        justifyContent: "flex-start",
+                        marginBottom: "2em"
+                    } as CSSProperties
+                },
+                mobile: {
+                    table: {
+                    } as CSSProperties,
+                    filter: {
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "start",
+                        justifyContent: "flex-start",
+                        marginBottom: "2em"
+                    } as CSSProperties
+                }
+            },
+        }
+    },
+    computed: {
+        elementSize() {
+            return this.device.isMobileOrTablet ? "small": "default";
         }
     },
     methods: {
@@ -154,22 +189,17 @@ export default {
 </script>
     
 <style scoped>
-#tally-table {
-    width: 100%;
-}
-.tally-table-filter {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr) repeat(6,.5fr);
-    align-items: end;
-    gap: .5em;
-    justify-content: space-between;
-    margin-bottom: 2em;
-}
-
-.tally-table-filter div {
+.tally-table-filter div:not(.table-filter-buttons) {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    margin-bottom: .5em;
+}
+
+.table-filter-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em
 }
 
 .tally-table-paginator {
@@ -180,5 +210,9 @@ export default {
 .table-action-buttons {
     display: flex;
     flex-direction: row;
+}
+
+.comment {
+    font-size: .45em;
 }
 </style>

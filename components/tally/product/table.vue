@@ -4,7 +4,7 @@
             <TallyProductForm :products-dropdown="dropdown.products" v-if="dropdown.isLoaded" @tally-product-add="getAddedTallyProduct"></TallyProductForm>
         </div>
         <el-table :data="tallyProducts" style="width: 100%" type="index" :lazy="true" :summary-method="getSummaries" show-summary v-loading="componentState.isBusy" :size="elementSize">
-            <el-table-column prop="product_name" label="Product Name" width="100px"/>
+            <el-table-column prop="product_name" label="Product Name" min-width="140px"/>
             <el-table-column prop="product_count" label="Made" />
             <el-table-column prop="product_unsold" label="Unsold" />
             <el-table-column prop="product_sold" label="Sold" />

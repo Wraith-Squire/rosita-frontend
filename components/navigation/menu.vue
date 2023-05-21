@@ -1,23 +1,16 @@
 <template>
     <div id="nav-menu">
-        <el-radio-group v-model="menu.isCollapse" style="margin-bottom: 20px">
-            <el-radio-button :label="false">expand</el-radio-button>
-            <el-radio-button :label="true">collapse</el-radio-button>
-        </el-radio-group>
-        <el-menu
-            default-active="1"
-            class="el-menu-rosita"
-            :collapse="menu.isCollapse"
-            >
-            <el-menu-item index="/product/" @click="goToProduct()">
-                <el-icon><ElIconBurger></ElIconBurger></el-icon>
-                <template #title>Product</template>
-            </el-menu-item>
-            <el-menu-item index="/tally/" @click="goToTally()">
-                <el-icon><ElIconNotebook></ElIconNotebook></el-icon>
-                <template #title>Tally</template>
-            </el-menu-item>
-        </el-menu>
+        <el-dropdown>
+            <el-button type="primary">
+                <el-icon><ElIconMenu></ElIconMenu></el-icon>
+            </el-button>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item @click="goToProduct()"><el-icon><ElIconBurger></ElIconBurger></el-icon> Product</el-dropdown-item>
+                <el-dropdown-item @click="goToTally()"><el-icon><ElIconNotebook></ElIconNotebook></el-icon> Tally</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
     </div>        
 </template>
     
@@ -41,10 +34,6 @@ export default {
 }
 </script>
 <style scoped>
-    .el-menu-rosita {
-        height: 100vh;
-    }
-
     img {
         mix-blend-mode: darken;
     }

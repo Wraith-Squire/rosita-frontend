@@ -1,7 +1,7 @@
 <template>
     <div id="product-table">
         <div class="product-table-filter">
-            <div>
+            <div style="width: 280px;">
                 <label>Search</label>
                 <el-input
                     v-model="filters.search"
@@ -9,6 +9,7 @@
                     type="text"
                     placeholder="Please input"
                     @input="getProducts(true)"
+                    style="width: 100%;"
                 />
             </div>
             <div></div>
@@ -22,7 +23,7 @@
             </div>
         </div>
         <div>
-            <el-table :data="products" stripe style="width: 100%" v-loading="componentState.isBusy">
+            <el-table :data="products" stripe style="width: 100%" v-loading="componentState.isBusy" size="small">
                 <el-table-column prop="product_name" label="Name" />
                 <el-table-column prop="product_price" label="Price" />
                 <el-table-column prop="product_cost" label="Cost" />
@@ -89,7 +90,7 @@ export default {
 
                     this.componentState.isBusy = false;
                 });
-            }, 200);
+            }, 50);
 
             
         },

@@ -1,9 +1,10 @@
 <template>
     <div id="default-layout-container">
-        <section id="default-layout-left">
-            <NavigationMenu />
-        </section>
-        <section id="default-layout-center">
+        <NavigationMenu style="position:fixed; top: 0px; left: 0px;"/>
+
+        <div id="default-layout-left">
+        </div>
+        <div id="default-layout-center">
             <!-- <div class="nav-menu-header">
                 <div>
                     <img src="/logo.jpg" height="100" width="100"/>
@@ -11,9 +12,9 @@
                 <div id="nav-title">Products Tally Management</div>
             </div> -->
             <NuxtPage />
-        </section>
-        <section id="default-layout-right">
-        </section>
+        </div>
+        <div id="default-layout-right">
+        </div>
     </div>
 </template>
  
@@ -35,5 +36,19 @@ body {
 
 .error {
     color: var(--el-color-danger);
+}
+
+@media screen and (max-width: 1200px) {
+    #default-layout-left {
+        display: none;
+    }
+
+    #default-layout-right {
+        display: none;
+    }
+
+    #default-layout-container {
+        width: 100%;
+    }
 }
 </style>

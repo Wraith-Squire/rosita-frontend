@@ -3,12 +3,13 @@
         <div>
             <TallyProductForm :products-dropdown="dropdown.products" v-if="dropdown.isLoaded" @tally-product-add="getAddedTallyProduct"></TallyProductForm>
         </div>
-        <el-table :data="tallyProducts" style="width: 100%" type="index" :lazy="true" :summary-method="getSummaries" show-summary v-loading="componentState.isBusy">
+        <el-table :data="tallyProducts" style="width: 100%" type="index" :lazy="true" :summary-method="getSummaries" show-summary v-loading="componentState.isBusy" size="small">
             <el-table-column prop="product_name" label="Product Name" />
             <el-table-column prop="product_count" label="Made" />
+            <el-table-column prop="product_unsold" label="Made" />
             <el-table-column prop="product_sold" label="Sold" />
             <el-table-column prop="product_sales" label="Sales" />
-            <el-table-column label="Actions">
+            <el-table-column label="Actions" width="150px">
                 <template #default="scope">
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: .5em;width: 100%;">
                         <TallyProductForm :is-edit="true" :products-dropdown="dropdown.products" :tally-product-prop.sync="scope.row" @tally-product-edit="getEditedTallyProduct($event, scope.$index )"></TallyProductForm>

@@ -3,7 +3,7 @@
         {{ isEdit ? 'View': 'Add' }}
     </el-button>
     <teleport to="body">
-        <el-dialog v-model="form.isVisible" title="Tally Product" :close-on-click-modal="false">
+        <el-dialog v-model="form.isVisible" title="Tally Product" :close-on-click-modal="false" width="90%">
             <div class="tally-product-form">
                 <div>
                     <label>Product Name</label>
@@ -203,13 +203,19 @@ export default {
     
 <style scoped>
     .tally-product-form {
-        display: grid;
-        gap: 1em;
-        grid-template-columns: repeat(3, 1fr);
+        display: flex;
+        flex-direction: column;
     }
 
     .tally-product-form > div {
         display: flex;
         flex-direction: column;
+    }
+
+    .dialog-footer {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: flex-end;
     }
 </style>

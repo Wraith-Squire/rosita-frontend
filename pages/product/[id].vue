@@ -9,6 +9,7 @@
                     type="text"
                     placeholder="Please input"
                     :disabled="componentState.isBusy"
+                    style="width: 100%;"
                 />
                 <span v-if="errors.product_name" class="error">{{errors.product_name[0]}}</span>
             </div>
@@ -162,5 +163,12 @@ export default {
     flex-direction: row;
     justify-content: flex-end;
     margin-top: 1em;
+}
+
+@media screen and (max-width: 1200px) {
+    #product-form-container {
+        padding: 1em;
+        width: 90vw;
+    }
 }
 </style>

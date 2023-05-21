@@ -41,7 +41,7 @@
             </div>
         </div>
         <div>
-            <el-table :data="tallies" stripe style="width: 100%" v-loading="componentState.isBusy">
+            <el-table :data="tallies" stripe style="width: 100%" v-loading="componentState.isBusy" size="small">
                 <el-table-column label="Date Tallied" >
                     <template #default="scope">
                         {{ new Date(scope.row.date_tallied).toLocaleDateString() }}
@@ -115,7 +115,7 @@ export default {
 
                     this.componentState.isBusy = false;
                 });
-            }, 200)
+            }, 50)
         },
         async exportToExcel() {
             this.componentState.isBusy = true;

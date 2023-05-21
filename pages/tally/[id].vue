@@ -166,6 +166,7 @@ export default {
 <style scoped>
 #tally-form-container {
     padding: 2em;
+    width: 80vw;
 }
 
 .tally-form {
@@ -183,5 +184,12 @@ export default {
     flex-direction: row;
     justify-content: flex-end;
     margin-top: 1em;
+}
+
+@media screen and (max-width: 1200px) {
+    #tally-form-container {
+        padding: 1em;
+        width: 90vw;
+    }
 }
 </style>

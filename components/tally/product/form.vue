@@ -1,5 +1,5 @@
 <template>
-    <el-button @click="open()" type="primary" :size="isEdit ? 'small': elementSize">
+    <el-button @click="open()" type="primary" :size="isEdit ? 'small': elementSize" :color="isEdit ? 'var(--el-color-success)': 'var(--el-color-primary)'">
         {{ isEdit ? 'View': 'Add' }}
     </el-button>
     <teleport to="body">

@@ -13,7 +13,7 @@
                 <template #default="scope">
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: .5em;width: 100%;">
                         <TallyProductForm :is-edit="true" :products-dropdown="dropdown.products" :tally-product-prop.sync="scope.row" @tally-product-edit="getEditedTallyProduct($event, scope.$index )"></TallyProductForm>
-                        <el-button type="danger" @click="deleteTallyProduct(scope.$index)" :size="elementSize">Delete</el-button>
+                        <el-button type="danger" @click="deleteTallyProduct(scope.$index)" size="small">Delete</el-button>
                     </div>
                 </template>
             </el-table-column>
@@ -75,7 +75,7 @@ export default {
             });
         },
         getSummaries() {
-            return ['TOTAL', this.totalCount.toString(), this.totalSold.toString(), this.totalSales.toString(), ''];
+            return ['TOTAL', this.totalCount.toString(), this.totalUnSold.toString(), this.totalSold.toString(), this.totalSales.toString(), ''];
         }
     },
     created() {
@@ -86,6 +86,9 @@ export default {
     computed: {
         totalCount() {
             return this.tallyProducts.reduce((sum, value) => Number(sum) + Number((value.product_count ?? 0)), 0);
+        },
+        totalUnSold() {
+            return this.tallyProducts.reduce((sum, value) => Number(sum) + Number((value.product_unsold ?? 0)), 0);
         },
         totalSold() {
             return this.tallyProducts.reduce((sum, value) => Number(sum) + Number((value.product_sold ?? 0)), 0);

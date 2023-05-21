@@ -42,16 +42,16 @@
         </div>
         <div>
             <el-table :data="tallies" stripe :style="device.isMobile ? styles.mobile.table: styles.default.table" v-loading="componentState.isBusy" :size="elementSize">
-                <el-table-column label="Date Tallied" :width="device.isMobile ? '90px': 'auto'">
+                <el-table-column label="Date Tallied" :width="device.isMobile ? '100px': 'auto'">
                     <template #default="scope">
                         {{ new Date(scope.row.date_tallied).toLocaleDateString() }}
                         <div style="font-size: .8em;">Comment:</div> 
                         <div style="font-size: .8em;"><i>{{ scope.row.comment }}</i></div>
                     </template>
                 </el-table-column>
-                <el-table-column prop="total_count" label="Made" :width="device.isMobile ? '50px': 'auto'"/>
-                <el-table-column prop="total_sold" label="Sold" :width="device.isMobile ? '50px': 'auto'"/>
-                <el-table-column prop="total_sales" label="Sales" :width="device.isMobile ? '50px': 'auto'"/>
+                <el-table-column prop="total_count" label="Made" :width="device.isMobile ? '60px': 'auto'"/>
+                <el-table-column prop="total_sold" label="Sold" :width="device.isMobile ? '60px': 'auto'"/>
+                <el-table-column prop="total_sales" label="Sales" :width="device.isMobile ? '60px': 'auto'"/>
                 <el-table-column label="Actions" :width="device.isMobile ? '80px': 'auto'">
                     <template #default="scope">
                         <div class="table-action-buttons">

@@ -18,7 +18,7 @@
         </div>
         <div>
             <el-table :data="products" stripe style="width: 100%" v-loading="componentState.isBusy" :size="elementSize">
-                <el-table-column prop="product_name" label="Name" />
+                <el-table-column prop="product_name" label="Name" min-width="140px"/>
                 <el-table-column prop="product_price" label="Price" />
                 <el-table-column prop="product_cost" label="Cost" />
                 <el-table-column label="Actions">

@@ -27,9 +27,10 @@ body {
 
 #default-layout-container {
     display: grid;
-    grid-template-columns: 1fr 3fr 1fr;
+    grid-template-columns: 3fr;
     height: 100lvh;
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    width: 100%;
 }
 
 #default-layout-center {
@@ -52,7 +53,11 @@ body {
 }
 
 .nav-title {
-    font-size: 36px;
+    font-size: 20px;
     text-align: center;
+}
+
+img {
+    mix-blend-mode: multiply;
 }
 </style>

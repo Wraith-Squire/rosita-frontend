@@ -43,7 +43,7 @@ export default {
 #landing-page {
     display: flex;
     flex-direction: column;
-    padding: 4em;
+    font-size: small;
 }
 
 #loading {

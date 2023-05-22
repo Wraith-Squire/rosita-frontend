@@ -42,7 +42,7 @@
         </div>
         <div>
             <el-table :data="tallies" stripe :style="device.isMobile ? styles.mobile.table: styles.default.table" v-loading="componentState.isBusy" :size="elementSize">
-                <el-table-column prop="tally_id" label="ID" :width="device.isMobile ? '30px' : '50px'"/>
+                <el-table-column prop="tally_id" label="ID" :width="'50px'"/>
                 <el-table-column label="Date Tallied" :width="device.isMobile ? '100px': 'auto'">
                     <template #default="scope">
                         {{ new Date(scope.row.date_tallied).toLocaleDateString() }}

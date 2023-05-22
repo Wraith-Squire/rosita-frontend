@@ -15,12 +15,28 @@
             <el-button type="default" :size="elementSize" v-if="dropdown.isLoaded" style="margin-left: 12px;" @click="rolloverProducts()">Roll Over</el-button>
             <TallyProductForm :products-dropdown="dropdown.products" v-if="dropdown.isLoaded" @tally-product-add="getAddedTallyProduct"></TallyProductForm>
         </div>
-        <el-table :data="tallyProducts" style="width: 100%" type="index" :lazy="true" :summary-method="getSummaries" show-summary v-loading="componentState.isBusy" :size="elementSize">
-            <el-table-column prop="product_name" label="Product Name" min-width="140px"/>
-            <el-table-column prop="product_count" label="Made" />
-            <el-table-column prop="product_unsold" label="Unsold" />
-            <el-table-column prop="product_sold" label="Sold" />
-            <el-table-column prop="product_sales" label="Sales" />
+        <el-table :data="tallyProducts" style="width: 100%" type="index" :lazy="true" :summary-method="getSummaries" :show-summary="!device.isMobileOrTablet" v-loading="componentState.isBusy" :size="elementSize">
+            <el-table-column prop="product_name" label="Product Name" min-width="100px"/>
+            <el-table-column label="Summary" v-if="device.isMobileOrTablet">
+                <template #default="scope">
+                    <div>
+                        Made: {{ scope.row.product_count }}
+                    </div>
+                    <div>
+                        Unsold: {{ scope.row.product_unsold }}
+                    </div>
+                    <div>
+                        Sold: {{ scope.row.product_sold }}
+                    </div>
+                    <div>
+                        Sales: {{ scope.row.product_sales }}
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="product_count" label="Made" v-if="!device.isMobileOrTablet"/>
+            <el-table-column prop="product_unsold" label="Unsold" v-if="!device.isMobileOrTablet"/>
+            <el-table-column prop="product_sold" label="Sold" v-if="!device.isMobileOrTablet"/>
+            <el-table-column prop="product_sales" label="Sales" v-if="!device.isMobileOrTablet"/>
             <el-table-column label="Actions" width="150px">
                 <template #default="scope">
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: .5em;width: 100%;">
@@ -30,6 +46,21 @@
                 </template>
             </el-table-column>
         </el-table>
+        <div class="summary-total" v-if="device.isMobileOrTablet && tallyProducts.length > 0">
+            <label>Summary Total</label>
+            <div>
+                Made: {{ totalCount }}
+            </div>
+            <div>
+                Unsold: {{ totalUnSold }}
+            </div>
+            <div>
+                Sold: {{ totalSold }}
+            </div>
+            <div>
+                Sales: {{ totalSales }}
+            </div>
+        </div>
     </div>
 </template>
     
@@ -132,7 +163,19 @@ export default {
             });
         },
         getSummaries() {
-            return ['TOTAL', this.totalCount.toString(), this.totalUnSold.toString(), this.totalSold.toString(), this.totalSales.toString(), ''];
+            if (!this.device.isMobileOrTablet) {
+                return ['TOTAL', this.totalCount.toString(), this.totalUnSold.toString(), this.totalSold.toString(), this.totalSales.toString(), ''];
+            }
+
+            var summary = 
+            {
+                Made: this.totalCount.toString(),
+                Unsold: this.totalUnSold.toString(),
+                Sold: this.totalSold.toString(),
+                Sales: this.totalSales.toString(),
+            };
+
+            return ['TOTAL', summary.toString(), ''];
         }
     },
     created() {
@@ -175,11 +218,26 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
-    align-items: end;
+    align-items: flex-end;
 }
 
 #tally-product-table > div:first-child > div{
     display: flex;
     flex-direction: column;
+}
+
+.summary-total {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    font-size: 0.7em;
+    color: #606266;
+}
+
+.summary-total label {
+    font-size: 1.1em;
+    font-weight: bold;
 }
 </style>

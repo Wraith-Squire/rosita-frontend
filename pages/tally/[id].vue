@@ -27,7 +27,7 @@
                 <span v-if="errors.comment" class="error">{{errors.comment[0]}}</span>
             </div>
             <div class="tally-form-products">
-                <label>Products</label>
+                <h4>Products</h4>
                 <TallyProductTable v-if="componentState.initialized" :tally-products-prop="tally.products" @tally-products-updated="grabTallyProductsUpdate"></TallyProductTable>
                 <span v-if="errors.products" class="error">{{errors.products[0]}}</span>
             </div>

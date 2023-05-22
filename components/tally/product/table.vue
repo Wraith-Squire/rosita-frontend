@@ -1,6 +1,18 @@
 <template>
     <div id="tally-product-table">
         <div>
+            <div v-if="dropdown.isLoaded">
+                <label>Rollover Tally ID</label>
+                <el-input-number
+                    v-model="rollover.id"
+                    placeholder="Please input"
+                    :controls="false"
+                    :disabled="componentState.isBusy"
+                    style="width: 100%;"
+                    :size="elementSize"
+                />
+            </div>
+            <el-button type="default" :size="elementSize" v-if="dropdown.isLoaded" style="margin-left: 12px;" @click="rolloverProducts()">Roll Over</el-button>
             <TallyProductForm :products-dropdown="dropdown.products" v-if="dropdown.isLoaded" @tally-product-add="getAddedTallyProduct"></TallyProductForm>
         </div>
         <el-table :data="tallyProducts" style="width: 100%" type="index" :lazy="true" :summary-method="getSummaries" show-summary v-loading="componentState.isBusy" :size="elementSize">
@@ -23,6 +35,7 @@
     
 <script lang='ts'>
 import { ProductService } from '~/services/productService';
+import { TallyService } from '~/services/tallyService';
 import { Product } from '~/types/product';
 import {TallyProduct} from '~/types/tally';
 
@@ -43,6 +56,9 @@ export default {
             tallyProducts: [] as Array<TallyProduct>,
             componentState: {
                 isBusy: false
+            },
+            rollover: {
+                id: undefined
             },
             device: useDevice(),
         }
@@ -69,9 +85,50 @@ export default {
             this.$emit('TallyProductsUpdated', this.tallyProducts);
         },
         deleteTallyProduct(index: number) {
-            ElMessageBox.confirm("Are you sure you want to delete the tally for this product?").then(() => {
+            ElMessageBox.confirm(
+                'Are you sure you want to delete the tally for this product?', 
+                'Warning',
+                {
+                    type: 'warning',
+                    center: true
+                }
+            ).then(() => {
                 this.tallyProducts.splice(index, 1);
                 this.$emit('TallyProductsUpdated', this.tallyProducts);
+            });
+        },
+        rolloverProducts() {
+            ElMessageBox.confirm(
+                `Are you sure you want to rollover products from Tally with ID number ${this.rollover.id}? This will replace inputted products in this tally.`, 
+                'Warning',
+                {
+                    type: 'warning',
+                    center: true
+                }
+            ).then(async () => {
+                if (this.rollover.id == undefined) {
+                    ElMessageBox.alert("Please input a valid Tally ID.");
+
+                    return;
+                } 
+
+                await TallyService.details(this.rollover.id).then((response) => {
+                    const data = response as unknown as Record<string, any>;
+                    data.products = JSON.parse(data.products)??[];
+
+                    if (data.products.length > 0) {
+                        data.products.map((product: TallyProduct) => {
+                            product.product_count = product.product_unsold;
+                            product.product_sold = product.product_count;
+                            product.product_unsold = 0;
+                            product.product_sales = Number(Number(product.product_price ?? 0) * Number(product.product_sold ?? 0));
+                        })
+                    }
+
+                    this.tallyProducts = data.products;
+                }).catch((error) => {
+                    console.log(error);
+                })
             });
         },
         getSummaries() {
@@ -98,6 +155,12 @@ export default {
         },
         elementSize() {
             return this.device.isMobileOrTablet ? "small": "default";
+        },
+        previousDate() {
+            var date = new Date();
+            date.setDate(date.getDate() - 1);
+
+            return date.toISOString().slice(0, 10);
         }
     }
 }
@@ -108,8 +171,15 @@ export default {
     display: grid;
 }
 
-#tally-product-table div:first-child {
-    display: grid;
-    justify-content: end;
+#tally-product-table > div:first-child {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: end;
+}
+
+#tally-product-table > div:first-child > div{
+    display: flex;
+    flex-direction: column;
 }
 </style>

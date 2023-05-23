@@ -117,7 +117,7 @@ export default {
         },
         deleteTallyProduct(index: number) {
             ElMessageBox.confirm(
-                'Are you sure you want to delete the tally for this product?', 
+                'Are you sure you want to delete the tally for this product?',
                 'Warning',
                 {
                     type: 'warning',
@@ -130,7 +130,7 @@ export default {
         },
         rolloverProducts() {
             ElMessageBox.confirm(
-                `Are you sure you want to rollover products from Tally with ID number ${this.rollover.id}? This will replace inputted products in this tally.`, 
+                `Are you sure you want to rollover products from Tally with ID number ${this.rollover.id}? This will replace inputted products in this tally.`,
                 'Warning',
                 {
                     type: 'warning',
@@ -141,11 +141,11 @@ export default {
                     ElMessageBox.alert("Please input a valid Tally ID.");
 
                     return;
-                } 
+                }
 
                 await TallyService.details(this.rollover.id).then((response) => {
                     const data = response as unknown as Record<string, any>;
-                    data.products = JSON.parse(data.products)??[];
+                    data.products = JSON.parse(data.products) ?? [];
 
                     if (data.products.length > 0) {
                         data.products.map((product: TallyProduct) => {
@@ -153,10 +153,10 @@ export default {
                             product.product_sold = product.product_count;
                             product.product_unsold = 0;
                             product.product_sales = Number(Number(product.product_price ?? 0) * Number(product.product_sold ?? 0));
-                        })
+                        });
                     }
 
-                    this.tallyProducts = data.products;
+                    this.tallyProducts = data.products.filter((product: TallyProduct) => product.product_count != 0);
                 }).catch((error) => {
                     console.log(error);
                 })

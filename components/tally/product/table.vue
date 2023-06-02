@@ -137,6 +137,7 @@ export default {
                     center: true
                 }
             ).then(async () => {
+                this.componentState.isBusy = true;
                 if (this.rollover.id == undefined) {
                     ElMessageBox.alert("Please input a valid Tally ID.");
 
@@ -157,6 +158,8 @@ export default {
                     }
 
                     this.tallyProducts = data.products.filter((product: TallyProduct) => product.product_count != 0);
+                    this.$emit('TallyProductsUpdated', this.tallyProducts);
+                    this.componentState.isBusy = false;
                 }).catch((error) => {
                     console.log(error);
                 })
